@@ -1,0 +1,78 @@
+services:
+
+  web:
+
+    build: .
+
+    image: hanwhagreen-web2:local
+
+    container_name: hanwhagreen-web2
+
+    ports:
+
+      - "8081:80"
+
+    volumes:
+
+      - ./nginx/default.conf:/etc/nginx/http.d/default.conf:ro
+
+    depends_on:
+
+      api:
+
+        condition: service_healthy
+
+    restart: unless-stopped
+
+    healthcheck:
+
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+
+      interval: 10s
+
+      timeout: 3s
+
+      retries: 3
+
+      start_period: 5s
+
+
+
+  api:
+
+    build: ./backend
+
+    image: hanwhagreen-api2:local
+
+    container_name: hanwhagreen-api2
+
+    volumes:
+
+      - qa_data:/data
+
+    environment:
+
+      DB_PATH: /data/qa.db
+
+      PORT: "3000"
+
+    restart: unless-stopped
+
+    healthcheck:
+
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+
+      interval: 10s
+
+      timeout: 3s
+
+      retries: 3
+
+      start_period: 10s
+
+
+
+volumes:
+
+  qa_data:
+

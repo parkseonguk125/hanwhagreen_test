@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0,maximum-scale=10,user-scalable=yes">
+<meta http-equiv="imagetoolbar" content="no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta property='og:title' content='(주)한화그린'>
+<meta property='og:type' content='website'>
+<meta property='og:image' content='/theme/FT_WEB50/img/og_Image.png'>
+<meta property='og:description' content='한화그린은 녹색환경의 선두주자로서 지속적으로 성장하는 벤처기업입니다'>
+<meta property='og:site_name' content='(주)한화그린'>
+<title>로그인 | 한화그린</title>
+<link rel="stylesheet" href="https://hanwhagreen.com/theme/FT_WEB50/css/default.css?ver=2303229">
+<link rel="stylesheet" href="https://hanwhagreen.com/js/font-awesome/css/font-awesome.min.css?ver=2303229">
+<link rel="stylesheet" href="https://hanwhagreen.com/theme/FT_WEB50/skin/member/basic/style.css?ver=2303229">
+<!--[if lte IE 8]>
+<script src="https://hanwhagreen.com/js/html5.js"></script>
+<![endif]-->
+<script>
+// 자바스크립트에서 사용하는 전역변수 선언
+var g5_url       = "https://hanwhagreen.com";
+var g5_bbs_url   = "https://hanwhagreen.com/bbs";
+var g5_is_member = "";
+var g5_is_admin  = "";
+var g5_is_mobile = "";
+var g5_bo_table  = "";
+var g5_sca       = "";
+var g5_editor    = "";
+var g5_cookie_domain = "";
+</script>
+    <link rel="shortcut icon" type="image/icon" href="https://hanwhagreen.com/theme/FT_WEB50/img/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="https://hanwhagreen.com/theme/FT_WEB50/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="https://hanwhagreen.com/theme/FT_WEB50/css/slick.css" />
+    <link rel="stylesheet" type="text/css" href="https://hanwhagreen.com/theme/FT_WEB50/css/icofont.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://hanwhagreen.com/theme/FT_WEB50/css/navigation.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link ref="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+    <link ref="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script src="https://hanwhagreen.com/js/jquery-1.12.4.min.js?ver=2304171"></script>
+<script src="https://hanwhagreen.com/js/jquery-migrate-1.4.1.min.js?ver=2304171"></script>
+<script src="https://hanwhagreen.com/js/jquery.menu.js?ver=2304171"></script>
+<script src="https://hanwhagreen.com/js/common.js?ver=2304171"></script>
+<script src="https://hanwhagreen.com/js/wrest.js?ver=2304171"></script>
+<script src="https://hanwhagreen.com/js/placeholders.min.js?ver=2304171"></script>
+</head>
+<body>
+
+<!-- 로그인 시작 { -->
+<div id="mb_login" class="mbskin">
+
+    <div class="login_skin">
+        <h1>로그인</h1>
+        <div class="titleBox">
+            <p>회원/로그인</p>
+        </div>
+        <form name="flogin" action="https://hanwhagreen.com/bbs/login_check.php" onsubmit="return flogin_submit(this);" method="post">
+        <input type="hidden" name="url" value="https%3A%2F%2Fhanwhagreen.com">
+        
+        <fieldset id="login_fs">
+            <legend>회원로그인</legend>
+            <label for="login_id" class="sound_only">회원아이디<strong class="sound_only"> 필수</strong></label>
+            <span class="login_name"><input type="text" name="mb_id" id="login_id" required class="frm_input required" size="20" maxLength="20" placeholder="아이디"></span>
+            <label for="login_pw" class="sound_only">비밀번호<strong class="sound_only"> 필수</strong></label>
+            <span class="login_pass"><input type="password" name="mb_password" id="login_pw" required class="frm_input required" size="20" maxLength="20" placeholder="비밀번호"></span>
+            <div class="auto_login">
+                <div class="login_if_auto chk_box">
+                    <input type="checkbox" name="auto_login" id="login_auto_login" class="selec_chk">
+                    <label for="login_auto_login"><span></span> </label><span class="login_text">자동 로그인</span>
+                </div>
+            </div>
+            <button type="submit" class="login_submit">로그인</button>
+        </fieldset> 
+        </form>
+            </div>
+
+            
+</div>
+
+<script>
+jQuery(function($){
+    $("#login_auto_login").click(function(){
+        if (this.checked) {
+            this.checked = confirm("자동로그인을 사용하시면 다음부터 회원아이디와 비밀번호를 입력하실 필요가 없습니다.\n\n공공장소에서는 개인정보가 유출될 수 있으니 사용을 자제하여 주십시오.\n\n자동로그인을 사용하시겠습니까?");
+        }
+    });
+});
+
+function flogin_submit(f)
+{
+    if( $( document.body ).triggerHandler( 'login_sumit', [f, 'flogin'] ) !== false ){
+        return true;
+    }
+    return false;
+}
+</script>
+<!-- } 로그인 끝 -->
+
+
+<!-- ie6,7에서 사이드뷰가 게시판 목록에서 아래 사이드뷰에 가려지는 현상 수정 -->
+<!--[if lte IE 7]>
+<script>
+$(function() {
+    var $sv_use = $(".sv_use");
+    var count = $sv_use.length;
+
+    $sv_use.each(function() {
+        $(this).css("z-index", count);
+        $(this).css("position", "relative");
+        count = count - 1;
+    });
+});
+</script>
+<![endif]-->
+
+
+</body>
+</html>

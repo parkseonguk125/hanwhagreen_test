@@ -1,0 +1,132 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Icon from "../Icons";
+import SlideToggle from "../common/SlideToggle";
+import { allSubMenus, parseAppHref, subNavGroups } from "../../utils/navRoutes";
+
+function NavItemLink({ item, className = "" }) {
+  const navigate = useNavigate();
+  const target = parseAppHref(item.href);
+
+  if (target) {
+    const href = `${target.pathname}${target.search}`;
+
+    return (
+      <a
+        href={href}
+        className={className}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          navigate(target);
+        }}
+      >
+        {item.label ? item.label : <span>{item.title}</span>}
+      </a>
+    );
+  }
+  return (
+    <a href={item.href || "#"} className={className} onClick={(e) => e.preventDefault()}>
+      {item.label ? item.label : <span>{item.title}</span>}
+    </a>
+  );
+}
+
+function NavDropdown({ title, children, className = "" }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className={`navi ${className}`.trim()}
+      onClick={() => setOpen((prev) => !prev)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setOpen((prev) => !prev);
+        }
+      }}
+      role="button"
+      tabIndex={0}
+    >
+      <p className="tit">{title}</p>
+      <SlideToggle
+        open={open}
+        className={`slide${open ? " on is-open" : ""}`}
+      >
+        {children}
+      </SlideToggle>
+      <div className={`navi_btn${open ? " on" : ""}`} aria-hidden="true">
+        <span>
+          <Icon
+            name={open ? "chevron-up" : "chevron-down"}
+            size="lg"
+            className="navi-arrow-icon"
+          />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function SubNavigation({ parentTitle = "고객센터", currentTitle }) {
+  return (
+    <div id="navigation">
+      <div className="inner">
+        <div id="navi_home">
+          <Link to="/">
+            <Icon name="home" size="lg" className="navi-home-icon" />
+          </Link>
+        </div>
+
+        <NavDropdown title={parentTitle} className="navi1">
+          <ul>
+            {subNavGroups.map((group) => (
+              <li key={group.title}>
+                <NavItemLink item={group} />
+              </li>
+            ))}
+          </ul>
+        </NavDropdown>
+
+        <NavDropdown title={currentTitle} className="navi2">
+          <div id="mysubmenu">
+            {allSubMenus.map((items, index) => (
+              <ul
+                key={index}
+                id={`mysub${index}`}
+                style={{ display: index === 4 ? "block" : "none" }}
+              >
+                {items.map((item) => (
+                  <li key={item.label} className="leftmenu_s">
+                    <NavItemLink item={item} />
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </NavDropdown>
+      </div>
+    </div>
+  );
+}
+
+export function SubVisual({ title, bannerUrl }) {
+  return (
+    <section className="visual" style={{ backgroundImage: `url('${bannerUrl}')` }}>
+      <div className="text_box">
+        <h2>{title}</h2>
+        <p className="text" />
+      </div>
+    </section>
+  );
+}
+
+export default function SubLayout({ pageId, title, bannerUrl, currentNavTitle, children }) {
+  return (
+    <div className="sub" id={pageId}>
+      <SubVisual title={title} bannerUrl={bannerUrl} />
+      <SubNavigation currentTitle={currentNavTitle} />
+      {children}
+    </div>
+  );
+}
