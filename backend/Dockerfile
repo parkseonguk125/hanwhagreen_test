@@ -1,6 +1,6 @@
 FROM node:20-alpine
 
-RUN apk add --no-cache python3 make g++ wget
+RUN apk add --no-cache wget
 
 WORKDIR /app
 
@@ -9,14 +9,11 @@ RUN npm install --omit=dev
 
 COPY src ./src
 
-RUN mkdir -p /data
-
-ENV DB_PATH=/data/qa.db
 ENV PORT=3000
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=10s --timeout=3s --retries=3 --start-period=5s \
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 --start-period=15s \
   CMD wget -qO- http://127.0.0.1:3000/api/health || exit 1
 
 CMD ["node", "src/server.js"]

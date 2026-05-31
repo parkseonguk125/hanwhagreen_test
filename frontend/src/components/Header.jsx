@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Icon from "./Icons";
 import { assets, navGroups, topLinks } from "../data/mock";
+import { logoutMember } from "../services/authApi";
+import { clearAuth, getStoredMember, isLoggedIn } from "../services/authAccess";
 import { parseAppHref } from "../utils/navRoutes";
 
 function AppNavLink({ item, className, onNavigate, onAfterNavigate }) {
@@ -48,12 +50,39 @@ function AppNavLink({ item, className, onNavigate, onAfterNavigate }) {
 
 export default function Header({ hideHamburger = false }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState(null);
   const [expandedMobileGroup, setExpandedMobileGroup] = useState(null);
+  const [member, setMember] = useState(() => getStoredMember());
+  const [loggingOut, setLoggingOut] = useState(false);
   const touchStartY = useRef(null);
   const scrollTargetRef = useRef(0);
   const scrollRafRef = useRef(null);
+
+  useEffect(() => {
+    setMember(isLoggedIn() ? getStoredMember() : null);
+  }, [location.pathname, location.search]);
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+
+    setLoggingOut(true);
+    closeHoverMenu();
+    closeMenu();
+
+    try {
+      await logoutMember();
+    } catch {
+      /* ignore */
+    }
+
+    clearAuth();
+    setMember(null);
+
+    // 같은 주소에서 새로고침 — 로그아웃 후 화면·권한이 한 번 갱신됨
+    navigate(0);
+  };
 
   useEffect(() => {
     if (hideHamburger && menuOpen) {
@@ -264,9 +293,27 @@ export default function Header({ hideHamburger = false }) {
             <div className="userBox">
               <ul>
                 <li>
-                  <Link to="/bbs/login.php" onClick={closeHoverMenu}>
-                    <Icon name="lock" size="sm" className="login-icon" /> 로그인
-                  </Link>
+                  {member ? (
+                    <>
+                      <span className="header-user-name">
+                        <Icon name="lock" size="sm" className="login-icon" />{" "}
+                        {member.name || member.id}님
+                      </span>
+                      <button
+                        type="button"
+                        className="header-logout-btn"
+                        onClick={handleLogout}
+                        disabled={loggingOut}
+                        aria-busy={loggingOut}
+                      >
+                        {loggingOut ? "로그아웃 중…" : "로그아웃"}
+                      </button>
+                    </>
+                  ) : (
+                    <Link to="/bbs/login.php" onClick={closeHoverMenu}>
+                      <Icon name="lock" size="sm" className="login-icon" /> 로그인
+                    </Link>
+                  )}
                 </li>
               </ul>
               {!hideHamburger && (

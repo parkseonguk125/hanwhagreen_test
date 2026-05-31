@@ -1,10 +1,29 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { notices, promoVideos } from "../data/mock";
+import { promoVideos } from "../data/mock";
 import Icon from "./Icons";
+import { fetchNoticePosts } from "../services/boardApi";
 import { boardRouteTarget, boardViewRouteTarget } from "../utils/navRoutes";
 
 export default function NewsSection() {
   const noticeRoute = boardRouteTarget("notice");
+  const [notices, setNotices] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchNoticePosts()
+      .then((posts) => {
+        if (!cancelled) setNotices(posts.slice(0, 5));
+      })
+      .catch(() => {
+        if (!cancelled) setNotices([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="section news" id="home-news">
@@ -37,18 +56,20 @@ export default function NewsSection() {
             <p className="title">공지사항</p>
             <Link to={noticeRoute}>
               <span>+</span>
-            </Link>          </div>
+            </Link>
+          </div>
           <div className="news_contents2">
             <ul>
               {notices.map((item) => (
-                <li key={item.title}>
-                  <Link to={noticeRoute}>                    <p>
+                <li key={item.id}>
+                  <Link to={boardViewRouteTarget("notice", item.id)}>
+                    <p>
                       <strong>
                         <Icon name="mega-phone" size="md" className="notice-icon" />
-                        {item.title}
+                        {item.subject}
                       </strong>
+                      <span>{item.date}</span>
                     </p>
-                    <span>{item.date}</span>
                   </Link>
                 </li>
               ))}

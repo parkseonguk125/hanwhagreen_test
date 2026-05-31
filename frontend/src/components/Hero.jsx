@@ -1,11 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { HeroArrow } from "./Icons";
-import { assets, noticeItem } from "../data/mock";
-import { boardRouteTarget } from "../utils/navRoutes";
+import { assets } from "../data/mock";
+import { fetchNoticePosts } from "../services/boardApi";
+import { boardRouteTarget, boardViewRouteTarget } from "../utils/navRoutes";
+
 export default function Hero() {
   const slides = assets.heroSlides;
   const [index, setIndex] = useState(0);
+  const [latestNotice, setLatestNotice] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchNoticePosts()
+      .then((posts) => {
+        if (!cancelled && posts[0]) setLatestNotice(posts[0]);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const goPrev = () => {
     setIndex((current) => (current - 1 + slides.length) % slides.length);
@@ -40,8 +55,15 @@ export default function Hero() {
           <h3>NOTICE</h3>
           <ul>
             <li>
-              <Link to={boardRouteTarget("notice")}>{noticeItem.title}</Link>
-            </li>          </ul>
+              {latestNotice ? (
+                <Link to={boardViewRouteTarget("notice", latestNotice.id)}>
+                  {latestNotice.subject}
+                </Link>
+              ) : (
+                <Link to={boardRouteTarget("notice")}>공지사항</Link>
+              )}
+            </li>
+          </ul>
           <div className="notice_con" />
         </div>
       </div>

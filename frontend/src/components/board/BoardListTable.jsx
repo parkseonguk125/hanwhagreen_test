@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Icon from "../Icons";
+import { isAdmin } from "../../services/authAccess";
 import { boardPasswordRouteTarget, boardRouteTarget, boardViewRouteTarget, parseAppHref } from "../../utils/navRoutes";
 
 export default function NoticeBoardList({ posts }) {
@@ -75,7 +76,7 @@ export function NewsBoardList({ posts }) {
             posts.map((post, index) => (
               <tr key={post.id} className={index % 2 ? "even" : ""}>
                 <td className="td_num2">{post.id}</td>
-                <td className="td_subject">
+                <td className="td_subject" style={{ paddingLeft: 0 }}>
                   <div className="bo_tit">
                     <Link to={boardViewRouteTarget("news", post.id)}>
                       {post.listSubject || post.subject}
@@ -101,6 +102,7 @@ export function NewsBoardList({ posts }) {
 
 export function QaBoardList({ posts }) {
   const listUrl = boardRouteTarget("qa");
+  const adminLoggedIn = isAdmin();
 
   return (
     <div className="tbl_head01 tbl_wrap">
@@ -141,7 +143,7 @@ export function QaBoardList({ posts }) {
                   <div className="bo_tit">
                     <Link
                       to={
-                        post.isSecret
+                        post.isSecret && !adminLoggedIn
                           ? boardPasswordRouteTarget("qa", post.id)
                           : boardViewRouteTarget("qa", post.id)
                       }

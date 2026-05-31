@@ -1,0 +1,15 @@
+# 공개 URL(인터넷) — web 컨테이너가 떠 있는 상태에서만 실행
+# 사용: docker compose -f docker-compose.yml -f docker-compose.tunnel.yml --profile tunnel up tunnel
+
+services:
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: hanwhagreen-tunnel
+    profiles: ["tunnel"]
+    command: tunnel --no-autoupdate --url http://host.docker.internal:8081
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      web:
+        condition: service_healthy
+    restart: "no"

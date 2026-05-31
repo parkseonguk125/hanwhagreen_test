@@ -264,9 +264,50 @@ a:focus {
   color: currentColor;
 }
 
+/* 헤더 상단 — hanwhagreen.com inner-top (로고·로그인·햄버거) */
+#header .inner-top {
+  padding: 26px 0;
+  box-sizing: border-box;
+}
+
+#header .userBox {
+  align-items: center;
+}
+
 #header .tp_link .hg-icon {
   width: 16px;
   height: 16px;
+  padding: 9px;
+  border: 1px solid #ddd;
+  border-radius: 100%;
+  box-sizing: content-box;
+  flex-shrink: 0;
+}
+
+#header .userBox .header-user-name {
+  margin-right: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+#header .userBox .header-logout-btn {
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+#header .userBox .header-logout-btn:hover {
+  color: #3a8afd;
+}
+
+#header .userBox .header-logout-btn:disabled {
+  color: #999;
+  cursor: wait;
+  text-decoration: none;
 }
 
 #header .userBox .login-icon {
@@ -405,8 +446,10 @@ a:focus {
 .hamburger {
   background: transparent;
   border: none;
-  margin-left: 16px;
+  margin-left: 12px;
+  padding: 4px 0;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .pro-arrow-btn,
@@ -471,8 +514,10 @@ a:focus {
 }
 
 #header .logo img {
-  height: 36px;
+  height: auto;
+  max-height: 44px;
   width: auto;
+  display: block;
 }
 
 @media screen and (max-width: 1050px) {
@@ -617,8 +662,15 @@ a:focus {
   }
 }
 
+@media screen and (max-width: 1050px) {
+  #header .inner-top {
+    padding: 18px 0;
+  }
+}
+
 @media screen and (max-width: 768px) {
   #header .logo img {
-    height: 32px;
+    max-height: 36px;
+    height: auto;
   }
 }

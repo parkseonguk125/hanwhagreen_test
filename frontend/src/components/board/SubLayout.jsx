@@ -112,7 +112,15 @@ export function SubNavigation({ parentTitle = "고객센터", currentTitle }) {
 
 export function SubVisual({ title, bannerUrl }) {
   return (
-    <section className="visual" style={{ backgroundImage: `url('${bannerUrl}')` }}>
+    <section className="visual">
+      <img
+        className="visual-banner-img"
+        src={bannerUrl}
+        alt=""
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+      />
       <div className="text_box">
         <h2>{title}</h2>
         <p className="text" />

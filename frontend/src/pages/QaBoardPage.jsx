@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useLocation, useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SubLayout from "../components/board/SubLayout";
 import BoardSearch from "../components/board/BoardSearch";
 import BoardToolbar, { BoardWriteBottom } from "../components/board/BoardToolbar";
 import { QaBoardList } from "../components/board/BoardListTable";
-import BoardView from "../components/board/BoardView";
+import NoticeBoardView from "../components/board/NoticeBoardView";
 import { fetchQaPost, fetchQaPosts } from "../services/boardApi";
 import { getUnlockedQaPost, isQaPostUnlocked, storeUnlockedQaPost } from "../services/boardAccess";
+import { isAdmin } from "../services/authAccess";
 import { filterPosts } from "../services/boardStorage";
+import { boardBanners } from "../config/boardBanners";
 import { boardPasswordRouteTarget } from "../utils/navRoutes";
 import "../styles/default.css";
 import "../styles/board-base.css";
@@ -17,27 +19,28 @@ import "../styles/sub-pages.css";
 import "../styles/board.css";
 import "../styles/board-pages.css";
 import "../styles/qna-skin.css";
-
-const ASSET = "https://hanwhagreen.com";
+import "../styles/notice-view.css";
 
 const qaConfig = {
   pageId: "qna",
   title: "온라인문의",
   navTitle: "온라인문의",
-  banner: `${ASSET}/theme/FT_WEB50/img/qa.png`,
+  banner: boardBanners.qa,
 };
 
 export default function QaBoardPage() {
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const wrId = searchParams.get("wr_id");
+  const adminLoggedIn = isAdmin();
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchState, setSearchState] = useState({ field: "wr_subject", keyword: "" });
   const [qaPosts, setQaPosts] = useState([]);
   const [qaLoading, setQaLoading] = useState(!wrId);
   const [qaError, setQaError] = useState("");
-  const [viewPost, setViewPost] = useState(null);
-  const [viewLoading, setViewLoading] = useState(Boolean(wrId));
+  const [viewPost, setViewPost] = useState(() => (wrId ? getUnlockedQaPost(wrId) : null));
+  const [viewLoading, setViewLoading] = useState(() => Boolean(wrId) && !getUnlockedQaPost(wrId));
   const [needsPassword, setNeedsPassword] = useState(false);
 
   useEffect(() => {
@@ -70,6 +73,7 @@ export default function QaBoardPage() {
     if (!wrId) {
       setViewPost(null);
       setNeedsPassword(false);
+      setViewLoading(false);
       return undefined;
     }
 
@@ -78,6 +82,7 @@ export default function QaBoardPage() {
       setViewPost(unlockedPost);
       setViewLoading(false);
       setNeedsPassword(false);
+      setQaError("");
       return undefined;
     }
 
@@ -91,7 +96,7 @@ export default function QaBoardPage() {
       .then((post) => {
         if (cancelled) return;
 
-        if (post.isSecret) {
+        if (post.isSecret && !post.content) {
           setNeedsPassword(true);
           return;
         }
@@ -109,7 +114,16 @@ export default function QaBoardPage() {
     return () => {
       cancelled = true;
     };
-  }, [wrId]);
+  }, [wrId, adminLoggedIn, location.pathname, location.search]);
+
+  useEffect(() => {
+    if (!viewPost) return undefined;
+
+    document.title = `${viewPost.subject} > 온라인문의 | 한화그린`;
+    return () => {
+      document.title = "한화그린";
+    };
+  }, [viewPost]);
 
   const filteredPosts = useMemo(
     () => filterPosts(qaPosts, searchState),
@@ -127,7 +141,7 @@ export default function QaBoardPage() {
     currentNavTitle: qaConfig.navTitle,
   };
 
-  if (wrId && needsPassword && !isQaPostUnlocked(wrId)) {
+  if (wrId && needsPassword && !isQaPostUnlocked(wrId) && !adminLoggedIn) {
     return <Navigate to={boardPasswordRouteTarget("qa", wrId)} replace />;
   }
 
@@ -150,7 +164,7 @@ export default function QaBoardPage() {
       <>
         <Header />
         <SubLayout {...layoutProps}>
-          <BoardView post={viewPost} table="qa" />
+          <NoticeBoardView post={viewPost} table="qa" />
         </SubLayout>
         <Footer />
       </>
@@ -164,6 +178,20 @@ export default function QaBoardPage() {
         <SubLayout {...layoutProps}>
           <section className="listSkin">
             <div className="inner board-loading">{qaError}</div>
+          </section>
+        </SubLayout>
+        <Footer />
+      </>
+    );
+  }
+
+  if (wrId) {
+    return (
+      <>
+        <Header />
+        <SubLayout {...layoutProps}>
+          <section className="listSkin">
+            <div className="inner board-loading">게시물을 불러올 수 없습니다.</div>
           </section>
         </SubLayout>
         <Footer />

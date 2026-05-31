@@ -52,3 +52,12 @@ export function boardViewRouteTarget(table, id) {
 export function boardPasswordRouteTarget(table, id, mode = "s") {
   return parseAppHref(`/bbs/password.php?w=${mode}&bo_table=${table}&wr_id=${id}`);
 }
+
+export function boardWriteRouteTarget(table, { wrId, mode } = {}) {
+  const params = new URLSearchParams({ bo_table: table });
+  if (mode === "u" && wrId) {
+    params.set("w", "u");
+    params.set("wr_id", String(wrId));
+  }
+  return parseAppHref(`/bbs/write.php?${params.toString()}`);
+}

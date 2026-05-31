@@ -2,9 +2,17 @@
   width: 100%;
   height: 470px;
   position: relative;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  overflow: hidden;
+  background-color: #2d5a3d;
+}
+
+.sub .visual .visual-banner-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .sub .visual::after {

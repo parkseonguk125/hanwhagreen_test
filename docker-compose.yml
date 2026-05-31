@@ -10,7 +10,7 @@ services:
 
     ports:
 
-      - "8081:80"
+      - "0.0.0.0:8081:80"
 
     volumes:
 
@@ -46,15 +46,23 @@ services:
 
     container_name: hanwhagreen-api2
 
-    volumes:
-
-      - qa_data:/data
-
     environment:
 
-      DB_PATH: /data/qa.db
+      DATABASE_URL: postgres://hanwha:hanwha_local@db:5432/hanwhagreen
 
       PORT: "3000"
+
+      QA_UPLOAD_DIR: /app/uploads/qa
+
+    volumes:
+
+      - qa_uploads:/app/uploads/qa
+
+    depends_on:
+
+      db:
+
+        condition: service_healthy
 
     restart: unless-stopped
 
@@ -66,7 +74,43 @@ services:
 
       timeout: 3s
 
-      retries: 3
+      retries: 5
+
+      start_period: 20s
+
+
+
+  db:
+
+    build: ./db
+
+    image: hanwhagreen-db:local
+
+    container_name: hanwhagreen-db
+
+    environment:
+
+      POSTGRES_USER: hanwha
+
+      POSTGRES_PASSWORD: hanwha_local
+
+      POSTGRES_DB: hanwhagreen
+
+    volumes:
+
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+    healthcheck:
+
+      test: ["CMD-SHELL", "pg_isready -U hanwha -d hanwhagreen"]
+
+      interval: 5s
+
+      timeout: 3s
+
+      retries: 10
 
       start_period: 10s
 
@@ -74,5 +118,6 @@ services:
 
 volumes:
 
-  qa_data:
+  postgres_data:
 
+  qa_uploads:

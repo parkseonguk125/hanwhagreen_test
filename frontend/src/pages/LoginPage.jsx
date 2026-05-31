@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { loginMember } from "../services/authApi";
+import { isLoggedIn, storeAuth } from "../services/authAccess";
 import "../styles/login-page.css";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const returnUrl = searchParams.get("url") || "/";
 
@@ -17,11 +20,15 @@ export default function LoginPage() {
     document.body.classList.add("is-login-page");
     document.title = "로그인 | 한화그린";
 
+    if (isLoggedIn()) {
+      navigate(returnUrl, { replace: true });
+    }
+
     return () => {
       document.body.classList.remove("is-login-page");
       document.title = "한화그린";
     };
-  }, []);
+  }, [navigate, returnUrl]);
 
   const handleAutoLoginChange = (event) => {
     const checked = event.target.checked;
@@ -52,7 +59,20 @@ export default function LoginPage() {
     setSubmitting(true);
 
     try {
-      alert("회원 아이디 또는 비밀번호가 잘못 되었습니다.");
+      const data = await loginMember({
+        mb_id: form.mb_id.trim(),
+        mb_password: form.mb_password,
+        auto_login: form.auto_login,
+      });
+
+      storeAuth(
+        { token: data.token, member: data.member },
+        { persistent: form.auto_login }
+      );
+
+      navigate(returnUrl, { replace: true });
+    } catch (error) {
+      alert(error.message);
     } finally {
       setSubmitting(false);
     }
@@ -89,6 +109,7 @@ export default function LoginPage() {
                   setForm((prev) => ({ ...prev, mb_id: event.target.value }))
                 }
                 disabled={submitting}
+                autoComplete="username"
               />
             </span>
 
@@ -110,6 +131,7 @@ export default function LoginPage() {
                   setForm((prev) => ({ ...prev, mb_password: event.target.value }))
                 }
                 disabled={submitting}
+                autoComplete="current-password"
               />
             </span>
 
@@ -132,7 +154,7 @@ export default function LoginPage() {
             </div>
 
             <button type="submit" className="login_submit" disabled={submitting}>
-              로그인
+              {submitting ? "로그인 중..." : "로그인"}
             </button>
           </fieldset>
         </form>

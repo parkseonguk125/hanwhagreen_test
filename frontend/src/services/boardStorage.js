@@ -82,28 +82,6 @@ export function incrementNewsHits(id) {
   if (post) post.hits += 1;
 }
 
-export const noticePosts = [
-  {
-    id: 1,
-    isNotice: true,
-    subject: "한화그린 홈페이지 리뉴얼",
-    author: "관리자",
-    hits: 3437,
-    date: "04-11",
-    content:
-      "안녕하세요. (주)한화그린입니다.\n\n홈페이지가 새롭게 리뉴얼되었습니다.\n보다 편리한 서비스 제공을 위해 지속적으로 개선하겠습니다.\n\n감사합니다.",
-  },
-];
-
-export function getNoticePost(id) {
-  return noticePosts.find((post) => post.id === Number(id));
-}
-
-export function incrementNoticeHits(id) {
-  const post = noticePosts.find((item) => item.id === Number(id));
-  if (post) post.hits += 1;
-}
-
 export function filterPosts(posts, { field, keyword }) {
   const query = keyword.trim().toLowerCase();
   if (!query) return posts;
@@ -122,8 +100,13 @@ export function boardListUrl(table) {
   return `/bbs/board.php?bo_table=${table}`;
 }
 
-export function boardWriteUrl(table) {
-  return `/bbs/write.php?bo_table=${table}`;
+export function boardWriteUrl(table, { wrId, mode } = {}) {
+  const params = new URLSearchParams({ bo_table: table });
+  if (mode === "u" && wrId) {
+    params.set("w", "u");
+    params.set("wr_id", String(wrId));
+  }
+  return `/bbs/write.php?${params.toString()}`;
 }
 
 export function boardViewUrl(table, id) {

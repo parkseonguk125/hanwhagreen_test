@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { fetchQaPost, verifyQaPost } from "../services/boardApi";
-import { storeUnlockedQaPost } from "../services/boardAccess";
-import { boardRouteTarget, boardViewRouteTarget } from "../utils/navRoutes";
+import { deleteQaPost, fetchQaPost, verifyQaPost } from "../services/boardApi";
+import {
+  clearUnlockedQaPost,
+  storeQaPassword,
+  storeUnlockedQaPost,
+} from "../services/boardAccess";
+import { boardRouteTarget, boardViewRouteTarget, boardWriteRouteTarget } from "../utils/navRoutes";
 import "../styles/password-page.css";
+
+const MODE_LABEL = {
+  s: "열람",
+  u: "수정",
+  d: "삭제",
+};
 
 export default function BoardPasswordPage() {
   const navigate = useNavigate();
@@ -20,13 +30,13 @@ export default function BoardPasswordPage() {
 
   useEffect(() => {
     document.body.classList.add("is-password-page");
-    document.title = "비밀번호 입력 | 한화그린";
+    document.title = `비밀번호 입력 (${MODE_LABEL[mode] || "확인"}) | 한화그린`;
 
     return () => {
       document.body.classList.remove("is-password-page");
       document.title = "한화그린";
     };
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
     if (table !== "qa" || !wrId) {
@@ -77,7 +87,26 @@ export default function BoardPasswordPage() {
     try {
       const post = await verifyQaPost(wrId, password.trim());
       storeUnlockedQaPost(post);
+      storeQaPassword(wrId, password.trim());
+
+      if (mode === "u") {
+        navigate(boardWriteRouteTarget("qa", { wrId: post.id, mode: "u" }));
+        return;
+      }
+
+      if (mode === "d") {
+        if (!window.confirm("정말 삭제하시겠습니까?")) {
+          return;
+        }
+        await deleteQaPost(wrId, password.trim());
+        clearUnlockedQaPost(wrId);
+        alert("삭제되었습니다.");
+        navigate(boardRouteTarget("qa"));
+        return;
+      }
+
       navigate(boardViewRouteTarget("qa", post.id));
+      return;
     } catch (submitError) {
       setError(submitError.message);
       alert(submitError.message);
@@ -113,19 +142,17 @@ export default function BoardPasswordPage() {
       <h1>{postMeta?.subject}</h1>
       <p>
         <strong>비밀글 기능으로 보호된 글입니다.</strong>
-        작성자와 관리자만 열람하실 수 있습니다.
-        <br /> 본인이라면 비밀번호를 입력하세요.
+        {mode === "u" && " 수정하려면 비밀번호를 입력하세요."}
+        {mode === "d" && " 삭제하려면 비밀번호를 입력하세요."}
+        {mode === "s" && (
+          <>
+            <br />
+            작성자와 관리자만 열람하실 수 있습니다. 본인이라면 비밀번호를 입력하세요.
+          </>
+        )}
       </p>
 
       <form id="fboardpassword" name="fboardpassword" onSubmit={handleSubmit}>
-        <input type="hidden" name="w" value={mode} />
-        <input type="hidden" name="bo_table" value={table} />
-        <input type="hidden" name="wr_id" value={wrId} />
-        <input type="hidden" name="comment_id" value="0" />
-        <input type="hidden" name="sfl" value="" />
-        <input type="hidden" name="stx" value="" />
-        <input type="hidden" name="page" value="" />
-
         <fieldset>
           <label htmlFor="password_wr_password" className="sound_only">
             비밀번호<strong>필수</strong>
@@ -143,7 +170,12 @@ export default function BoardPasswordPage() {
             onChange={(event) => setPassword(event.target.value)}
             disabled={submitting}
           />
-          <input type="submit" value="확인" className="btn_submit" disabled={submitting} />
+          <input
+            type="submit"
+            value={mode === "d" ? "삭제" : "확인"}
+            className="btn_submit"
+            disabled={submitting}
+          />
         </fieldset>
       </form>
     </div>
