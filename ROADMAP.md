@@ -15,14 +15,15 @@
 - [x] **3. 로그인 (DB)** — `members` / `member_sessions`, 임시 계정 `admin` / `green1234`
 - 공지 CRUD(작성·수정·삭제): **관리자 로그인 후**만 (API·화면)
 - [x] 4. Git + GitHub — https://github.com/parkseonguk125/hanwhagreen_test
-- [ ] 5. AWS EC2 배포
-- [ ] 6. EC2 공인 IP 접속 확인
+- [x] 5. AWS EC2 배포 — [docs/AWS_EC2_배포_안내.md](docs/AWS_EC2_배포_안내.md), `scripts/ec2-*.sh` (본인 AWS에서 실행)
+- [ ] 6. EC2 공인 IP 접속 확인 — 위 가이드 **⑦절** (`http://퍼블릭IP/`)
 - [ ] 7. 도메인 연결
 
 ## 문서
 
 - [README.md](README.md) — 시작 방법
 - [docs/프로젝트_구조_안내.md](docs/프로젝트_구조_안내.md) — 폴더·파일 설명
+- [docs/AWS_EC2_배포_안내.md](docs/AWS_EC2_배포_안내.md) — **5~6번** EC2 배포·접속 확인
 
 ## 3번 구현 요약
 

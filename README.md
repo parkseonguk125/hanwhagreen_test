@@ -21,6 +21,7 @@ docker compose up -d --build
 | [docs/외부접속_안내.md](docs/외부접속_안내.md) | 인터넷 공개 URL (Cloudflare 터널) |
 | [docs/로그인_안내.md](docs/로그인_안내.md) | 관리자 로그인 (DB, 임시 계정) |
 | [docs/GitHub_안내.md](docs/GitHub_안내.md) | **4번** Git + GitHub 연동 |
+| [docs/AWS_EC2_배포_안내.md](docs/AWS_EC2_배포_안내.md) | **5~6번** AWS EC2 배포·공인 IP 접속 |
 
 ## 바로 실행 (Windows)
 

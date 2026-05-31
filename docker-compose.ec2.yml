@@ -1,0 +1,7 @@
+# EC2(리눅스 서버)에서 사용 — 웹을 80번 포트로 공개 (6번 IP 접속용)
+# 실행: docker compose -f docker-compose.yml -f docker-compose.ec2.yml up -d --build
+
+services:
+  web:
+    ports:
+      - "0.0.0.0:80:80"
