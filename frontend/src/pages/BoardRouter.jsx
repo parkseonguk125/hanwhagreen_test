@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import NoticeBoardPage from "./NoticeBoardPage";
 import NewsBoardPage from "./NewsBoardPage";
 import QaBoardPage from "./QaBoardPage";
+import GalleryBoardPage from "./GalleryBoardPage";
 
 export default function BoardRouter() {
   const [searchParams] = useSearchParams();
@@ -13,6 +14,14 @@ export default function BoardRouter() {
 
   if (table === "news") {
     return <NewsBoardPage />;
+  }
+
+  if (table === "project") {
+    return <GalleryBoardPage table="project" />;
+  }
+
+  if (table === "certification") {
+    return <GalleryBoardPage table="certification" />;
   }
 
   return <NoticeBoardPage />;

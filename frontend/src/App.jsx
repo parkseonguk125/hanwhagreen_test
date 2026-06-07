@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import ContentPage from "./pages/ContentPage";
 import BoardRouter from "./pages/BoardRouter";
 import BoardWritePage from "./pages/BoardWritePage";
 import BoardPasswordPage from "./pages/BoardPasswordPage";
@@ -23,6 +24,7 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/bbs/content.php" element={<ContentPage />} />
         <Route path="/bbs/board.php" element={<BoardRouter />} />
         <Route path="/bbs/write.php" element={<BoardWritePage />} />
         <Route path="/bbs/password.php" element={<BoardPasswordPage />} />

@@ -1,3 +1,7 @@
+import { certifications as galleryCertifications } from "../data/certifications.js";
+import { projects as galleryProjects } from "../data/projects.js";
+import projectCategoryMap from "../data/projectCategoryMap.json";
+
 const ASSET = "https://hanwhagreen.com";
 
 export const newsPosts = [
@@ -111,4 +115,84 @@ export function boardWriteUrl(table, { wrId, mode } = {}) {
 
 export function boardViewUrl(table, id) {
   return `/bbs/board.php?bo_table=${table}&wr_id=${id}`;
+}
+
+function buildGalleryPosts(items, table) {
+  return items.map((item, index) => ({
+    id: item.id ?? index + 1,
+    subject: item.title,
+    desc: item.desc || item.title,
+    author: "관리자",
+    hits: 100 + item.id,
+    date: "25-05-29",
+    content: item.desc || item.title,
+    image: item.image,
+    imageLink: item.image
+      .replace("/thumb-", "/")
+      .replace(/_\d+x\d+\./, ".")
+      .replace("_383x240", ""),
+    table,
+    categorySca: table === "project" ? projectCategoryMap[String(item.id)] || "" : "",
+  }));
+}
+
+function buildCertificationPosts() {
+  const sortedByIdDesc = [...galleryCertifications].sort((a, b) => b.id - a.id);
+
+  const navById = new Map(
+    sortedByIdDesc.map((item, index) => {
+      const prevItem = index > 0 ? sortedByIdDesc[index - 1] : null;
+      const nextItem = index < sortedByIdDesc.length - 1 ? sortedByIdDesc[index + 1] : null;
+
+      return [
+        item.id,
+        {
+          prev: prevItem
+            ? { id: prevItem.id, subject: prevItem.subject || prevItem.title }
+            : null,
+          next: nextItem
+            ? { id: nextItem.id, subject: nextItem.subject || nextItem.title }
+            : null,
+        },
+      ];
+    })
+  );
+
+  return galleryCertifications.map((item) => {
+    const nav = navById.get(item.id) || { prev: null, next: null };
+
+    return {
+      id: item.id,
+      subject: item.subject || item.title,
+      title: item.title,
+      desc: item.content || item.subject,
+      author: "관리자",
+      hits: 100 + item.id,
+      date: item.date,
+      content: item.content || item.subject,
+      image: item.image,
+      imageLink: item.imageLink || item.image,
+      prev: nav.prev,
+      next: nav.next,
+      table: "certification",
+    };
+  });
+}
+
+const projectPosts = buildGalleryPosts(galleryProjects, "project");
+const certificationPosts = buildCertificationPosts();
+
+export function galleryPostsForTable(table) {
+  if (table === "project") return projectPosts;
+  if (table === "certification") return certificationPosts;
+  return [];
+}
+
+export function getGalleryPost(table, id) {
+  return galleryPostsForTable(table).find((post) => post.id === Number(id));
+}
+
+export function incrementGalleryHits(table, id) {
+  const post = getGalleryPost(table, id);
+  if (post) post.hits += 1;
 }

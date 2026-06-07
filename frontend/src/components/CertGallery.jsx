@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -11,8 +12,6 @@ export default function CertGallery() {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const [progress, setProgress] = useState(0);
-
-  const stop = (e) => e.preventDefault();
 
   return (
     <div
@@ -52,7 +51,7 @@ export default function CertGallery() {
           >
             <span className="sr-only">슬라이드 진행률</span>
           </div>
-          <DetailButton />
+          <DetailButton href="/bbs/board.php?bo_table=certification" />
         </div>
 
         <div className="gall_con_wrap">
@@ -81,13 +80,13 @@ export default function CertGallery() {
             {certificates.map((cert) => (
               <SwiperSlide key={cert.title}>
                 <div className="gall_con">
-                  <a href="#" onClick={stop}>
+                  <Link to={`/bbs/board.php?bo_table=certification&wr_id=${cert.id}`}>
                     <img src={cert.image} alt={cert.title} />
                     <dl>
                       <dt style={{ color: "black" }}>{cert.title}</dt>
                       <dd style={{ color: "#ccc" }}>{cert.desc}</dd>
                     </dl>
-                  </a>
+                  </Link>
                 </div>
               </SwiperSlide>
             ))}

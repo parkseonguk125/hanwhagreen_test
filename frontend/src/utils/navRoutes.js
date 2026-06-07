@@ -1,23 +1,27 @@
+export function contentRoute(coId) {
+  return `/bbs/content.php?co_id=${coId}`;
+}
+
 export const subNavGroups = [
-  { title: "ABOUT US", href: "#" },
-  { title: "BUSINESS", href: "#" },
-  { title: "회사실적", href: "#" },
-  { title: "지식산업권 외", href: "#" },
+  { title: "ABOUT US", href: contentRoute("company") },
+  { title: "BUSINESS", href: contentRoute("technology") },
+  { title: "회사실적", href: contentRoute("construction") },
+  { title: "지식산업권 외", href: "/bbs/board.php?bo_table=certification" },
   { title: "고객센터", href: "/bbs/board.php?bo_table=qa" },
 ];
 
 export const allSubMenus = [
   [
-    { label: "회사소개", href: "#" },
-    { label: "인사말", href: "#" },
-    { label: "오시는길", href: "#" },
+    { label: "회사소개", href: contentRoute("company") },
+    { label: "인사말", href: contentRoute("ceo") },
+    { label: "오시는길", href: contentRoute("map") },
   ],
-  [{ label: "보유기술", href: "#" }],
+  [{ label: "보유기술", href: contentRoute("technology") }],
   [
-    { label: "공사실적", href: "#" },
-    { label: "주요실적", href: "#" },
+    { label: "공사실적", href: contentRoute("construction") },
+    { label: "주요실적", href: "/bbs/board.php?bo_table=project" },
   ],
-  [{ label: "인증서", href: "#" }],
+  [{ label: "인증서", href: "/bbs/board.php?bo_table=certification" }],
   [
     { label: "공지사항", href: "/bbs/board.php?bo_table=notice" },
     { label: "온라인문의", href: "/bbs/board.php?bo_table=qa" },
@@ -41,12 +45,22 @@ export function boardTableFromHref(href) {
   return new URLSearchParams(parsed.search).get("bo_table");
 }
 
+export function contentCoIdFromHref(href) {
+  const parsed = parseAppHref(href);
+  if (!parsed || parsed.pathname !== "/bbs/content.php") return null;
+  return new URLSearchParams(parsed.search).get("co_id");
+}
+
 export function boardRouteTarget(table) {
   return parseAppHref(`/bbs/board.php?bo_table=${table}`);
 }
 
 export function boardViewRouteTarget(table, id) {
   return parseAppHref(`/bbs/board.php?bo_table=${table}&wr_id=${id}`);
+}
+
+export function contentRouteTarget(coId) {
+  return parseAppHref(contentRoute(coId));
 }
 
 export function boardPasswordRouteTarget(table, id, mode = "s") {

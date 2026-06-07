@@ -68,13 +68,11 @@ export default function NoticeBoardPage() {
 
   const [listLoading, setListLoading] = useState(!wrId);
 
-  const [listError, setListError] = useState("");
-
   const [viewPost, setViewPost] = useState(null);
 
   const [viewLoading, setViewLoading] = useState(Boolean(wrId));
 
-  const [viewError, setViewError] = useState("");
+  const [viewMissing, setViewMissing] = useState(false);
 
 
 
@@ -88,8 +86,6 @@ export default function NoticeBoardPage() {
 
     setListLoading(true);
 
-    setListError("");
-
 
 
     fetchNoticePosts()
@@ -97,18 +93,6 @@ export default function NoticeBoardPage() {
       .then((posts) => {
 
         if (!cancelled) setNoticePosts(posts);
-
-      })
-
-      .catch((error) => {
-
-        if (!cancelled) {
-
-          setListError(error.message);
-
-          setNoticePosts([]);
-
-        }
 
       })
 
@@ -138,7 +122,7 @@ export default function NoticeBoardPage() {
 
       setViewLoading(false);
 
-      setViewError("");
+      setViewMissing(false);
 
       return undefined;
 
@@ -150,7 +134,7 @@ export default function NoticeBoardPage() {
 
     setViewLoading(true);
 
-    setViewError("");
+    setViewMissing(false);
 
     setViewPost(null);
 
@@ -164,9 +148,9 @@ export default function NoticeBoardPage() {
 
       })
 
-      .catch((error) => {
+      .catch(() => {
 
-        if (!cancelled) setViewError(error.message);
+        if (!cancelled) setViewMissing(true);
 
       })
 
@@ -253,6 +237,7 @@ export default function NoticeBoardPage() {
             bannerUrl={noticeConfig.banner}
 
             currentNavTitle={noticeConfig.navTitle}
+            navGroupIndex={4}
 
           >
 
@@ -274,7 +259,7 @@ export default function NoticeBoardPage() {
 
 
 
-    if (viewError || !viewPost) {
+    if (viewMissing || !viewPost) {
 
       return (
 
@@ -291,6 +276,7 @@ export default function NoticeBoardPage() {
             bannerUrl={noticeConfig.banner}
 
             currentNavTitle={noticeConfig.navTitle}
+            navGroupIndex={4}
 
           >
 
@@ -298,7 +284,7 @@ export default function NoticeBoardPage() {
 
               <div className="inner board-loading">
 
-                {viewError || "게시물을 찾을 수 없습니다."}
+                게시물을 찾을 수 없습니다.
 
               </div>
 
@@ -331,6 +317,7 @@ export default function NoticeBoardPage() {
           bannerUrl={noticeConfig.banner}
 
           currentNavTitle={noticeConfig.navTitle}
+          navGroupIndex={4}
 
         >
 
@@ -363,6 +350,7 @@ export default function NoticeBoardPage() {
         bannerUrl={noticeConfig.banner}
 
         currentNavTitle={noticeConfig.navTitle}
+        navGroupIndex={4}
 
       >
 
@@ -381,16 +369,6 @@ export default function NoticeBoardPage() {
                 />
 
                 {listLoading && <p className="board-loading">불러오는 중...</p>}
-
-                {listError && !listLoading && (
-
-                  <p className="board-loading" role="alert">
-
-                    {listError}
-
-                  </p>
-
-                )}
 
                 {!listLoading && <NoticeBoardList posts={filteredPosts} />}
 

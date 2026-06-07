@@ -46,6 +46,10 @@ services:
 
     container_name: hanwhagreen-api2
 
+    ports:
+
+      - "3001:3000"
+
     environment:
 
       DATABASE_URL: postgres://hanwha:hanwha_local@db:5432/hanwhagreen

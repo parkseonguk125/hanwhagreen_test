@@ -38,7 +38,6 @@ export default function QaBoardPage() {
   const [searchState, setSearchState] = useState({ field: "wr_subject", keyword: "" });
   const [qaPosts, setQaPosts] = useState([]);
   const [qaLoading, setQaLoading] = useState(!wrId);
-  const [qaError, setQaError] = useState("");
   const [viewPost, setViewPost] = useState(() => (wrId ? getUnlockedQaPost(wrId) : null));
   const [viewLoading, setViewLoading] = useState(() => Boolean(wrId) && !getUnlockedQaPost(wrId));
   const [needsPassword, setNeedsPassword] = useState(false);
@@ -48,17 +47,10 @@ export default function QaBoardPage() {
 
     let cancelled = false;
     setQaLoading(true);
-    setQaError("");
 
     fetchQaPosts()
       .then((posts) => {
         if (!cancelled) setQaPosts(posts);
-      })
-      .catch((error) => {
-        if (!cancelled) {
-          setQaError(error.message);
-          setQaPosts([]);
-        }
       })
       .finally(() => {
         if (!cancelled) setQaLoading(false);
@@ -82,13 +74,11 @@ export default function QaBoardPage() {
       setViewPost(unlockedPost);
       setViewLoading(false);
       setNeedsPassword(false);
-      setQaError("");
       return undefined;
     }
 
     let cancelled = false;
     setViewLoading(true);
-    setQaError("");
     setViewPost(null);
     setNeedsPassword(false);
 
@@ -103,9 +93,6 @@ export default function QaBoardPage() {
 
         storeUnlockedQaPost(post);
         setViewPost(post);
-      })
-      .catch((error) => {
-        if (!cancelled) setQaError(error.message);
       })
       .finally(() => {
         if (!cancelled) setViewLoading(false);
@@ -139,6 +126,7 @@ export default function QaBoardPage() {
     title: qaConfig.title,
     bannerUrl: qaConfig.banner,
     currentNavTitle: qaConfig.navTitle,
+    navGroupIndex: 4,
   };
 
   if (wrId && needsPassword && !isQaPostUnlocked(wrId) && !adminLoggedIn) {
@@ -165,20 +153,6 @@ export default function QaBoardPage() {
         <Header />
         <SubLayout {...layoutProps}>
           <NoticeBoardView post={viewPost} table="qa" />
-        </SubLayout>
-        <Footer />
-      </>
-    );
-  }
-
-  if (wrId && qaError) {
-    return (
-      <>
-        <Header />
-        <SubLayout {...layoutProps}>
-          <section className="listSkin">
-            <div className="inner board-loading">{qaError}</div>
-          </section>
         </SubLayout>
         <Footer />
       </>
@@ -214,11 +188,6 @@ export default function QaBoardPage() {
                 />
 
                 {qaLoading && <p className="board-loading">불러오는 중...</p>}
-                {qaError && !qaLoading && (
-                  <p className="board-loading" style={{ color: "#c00" }}>
-                    {qaError}
-                  </p>
-                )}
 
                 {!qaLoading && <QaBoardList posts={filteredPosts} />}
                 <BoardWriteBottom table="qa" />

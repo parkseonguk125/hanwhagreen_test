@@ -8,6 +8,14 @@
   color: inherit;
 }
 
+#board_gallery01 .listForm li > a,
+#board_gallery02 .listForm li > a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
 .sub #bo_list .bo_tit a {
   color: #000;
   font-size: 17px;

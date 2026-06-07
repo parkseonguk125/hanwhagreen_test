@@ -2,9 +2,14 @@
 Thumbs.db
 
 # 의존성·빌드 결과
+node_modules
 frontend/node_modules
 frontend/dist
 backend/node_modules
+
+# Playwright E2E 결과
+playwright-report/
+test-results/
 
 # 비밀·로컬 설정 (예시 파일 .env.example 은 커밋 가능)
 .env
@@ -18,3 +23,7 @@ tunnel.err.log
 
 # QA 첨부 업로드 (볼륨 데이터, Git 제외)
 uploads/
+
+# 스크래핑·덤프 임시 파일
+scripts/*.txt
+scripts/*.json

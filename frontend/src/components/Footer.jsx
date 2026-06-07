@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Icon from "./Icons";
 import SlideToggle from "./common/SlideToggle";
 import { assets, footerInfo } from "../data/mock";
+import { preloadBannerForHref } from "../utils/preloadImage";
 
 export default function Footer() {
   const [familyOpen, setFamilyOpen] = useState(false);
@@ -12,8 +14,6 @@ export default function Footer() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const stop = (e) => e.preventDefault();
 
   return (
     <>
@@ -26,23 +26,33 @@ export default function Footer() {
             <div className="foo-tp">
               <ul>
                 <li>
-                  <a href="#" onClick={stop}>
-                    회사소개
-                  </a>
-                </li>
-                <li>
-                  <a href="#" onClick={stop}>
-                    보유기술
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://map.naver.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    to="/bbs/content.php?co_id=company"
+                    onMouseEnter={() =>
+                      preloadBannerForHref("/bbs/content.php?co_id=company")
+                    }
+                    onFocus={() =>
+                      preloadBannerForHref("/bbs/content.php?co_id=company")
+                    }
                   >
-                    오시는길
-                  </a>
+                    회사소개
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/bbs/content.php?co_id=technology"
+                    onMouseEnter={() =>
+                      preloadBannerForHref("/bbs/content.php?co_id=technology")
+                    }
+                    onFocus={() =>
+                      preloadBannerForHref("/bbs/content.php?co_id=technology")
+                    }
+                  >
+                    보유기술
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/bbs/content.php?co_id=map">오시는길</Link>
                 </li>
               </ul>
               <div
@@ -80,6 +90,28 @@ export default function Footer() {
                 <ul className="phone">
                   <li>대표전화 {footerInfo.phone}</li>
                   <li>{footerInfo.hours}</li>
+                </ul>
+                <ul className="sns">
+                  <li>
+                    <span className="sns-icon" aria-label="Instagram">
+                      <Icon name="instagram" size="xl" />
+                    </span>
+                  </li>
+                  <li>
+                    <a
+                      href={footerInfo.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="유튜브"
+                    >
+                      <Icon name="youtube" size="xl" />
+                    </a>
+                  </li>
+                  <li>
+                    <span className="sns-icon" aria-label="Facebook">
+                      <Icon name="facebook" size="xl" />
+                    </span>
+                  </li>
                 </ul>
               </div>
             </div>

@@ -6,6 +6,7 @@ import { assets, navGroups, topLinks } from "../data/mock";
 import { logoutMember } from "../services/authApi";
 import { clearAuth, getStoredMember, isLoggedIn } from "../services/authAccess";
 import { parseAppHref } from "../utils/navRoutes";
+import { preloadBannerForHref } from "../utils/preloadImage";
 
 function AppNavLink({ item, className, onNavigate, onAfterNavigate }) {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ function AppNavLink({ item, className, onNavigate, onAfterNavigate }) {
       <a
         href={href}
         className={className}
+        onMouseEnter={() => preloadBannerForHref(href)}
+        onFocus={() => preloadBannerForHref(href)}
         onMouseDown={(event) => {
           event.stopPropagation();
         }}

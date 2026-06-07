@@ -3,6 +3,12 @@ import DetailButton from "./DetailButton";
 import Icon from "./Icons";
 import { areaTabs, assets, introLines } from "../data/mock";
 
+const areaLinks = [
+  "/bbs/content.php?co_id=company",
+  "/bbs/content.php?co_id=construction",
+  "/bbs/content.php?co_id=technology",
+];
+
 export default function AreaSection() {
   const [activeTab, setActiveTab] = useState(0);
   const titleRef = useRef(null);
@@ -66,7 +72,7 @@ export default function AreaSection() {
                 <div className="area_con_tit">
                   <Icon name="eco-energy" size="xl" className="area-eco-icon" />
                   <p dangerouslySetInnerHTML={{ __html: tab.text }} />
-                  <DetailButton />
+                  <DetailButton href={areaLinks[tab.id]} />
                 </div>
               </div>
             ))}

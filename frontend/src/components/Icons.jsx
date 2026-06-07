@@ -255,6 +255,47 @@ const icons = {
       />
     </SvgWrap>
   ),
+  instagram: ({ size, className }) => (
+    <SvgWrap size={size} className={className}>
+      <rect
+        x="4"
+        y="4"
+        width="16"
+        height="16"
+        rx="4"
+        ry="4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        fill="none"
+      />
+      <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="1.8" fill="none" />
+      <circle cx="17" cy="7" r="1" fill="currentColor" />
+    </SvgWrap>
+  ),
+  youtube: ({ size, className }) => (
+    <SvgWrap size={size} className={className}>
+      <rect
+        x="3"
+        y="7"
+        width="18"
+        height="10"
+        rx="3"
+        ry="3"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        fill="none"
+      />
+      <path d="M11 10.5v5l5-2.5-5-2.5Z" fill="currentColor" />
+    </SvgWrap>
+  ),
+  facebook: ({ size, className }) => (
+    <SvgWrap size={size} className={className}>
+      <path
+        d="M14 8h3V4h-3c-2.8 0-5 2.2-5 5v2H6v4h3v8h4v-8h3l1-4h-4V9c0-.6.4-1 1-1Z"
+        fill="currentColor"
+      />
+    </SvgWrap>
+  ),
 };
 
 export default function Icon({ name, size = "md", className = "" }) {

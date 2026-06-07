@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Icon from "../Icons";
 import SlideToggle from "../common/SlideToggle";
 import { allSubMenus, parseAppHref, subNavGroups } from "../../utils/navRoutes";
+import { preloadBannerForHref } from "../../utils/preloadImage";
 
 function NavItemLink({ item, className = "" }) {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ function NavItemLink({ item, className = "" }) {
       <a
         href={href}
         className={className}
+        onMouseEnter={() => preloadBannerForHref(href)}
+        onFocus={() => preloadBannerForHref(href)}
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
@@ -68,7 +71,7 @@ function NavDropdown({ title, children, className = "" }) {
   );
 }
 
-export function SubNavigation({ parentTitle = "고객센터", currentTitle }) {
+export function SubNavigation({ parentTitle = "고객센터", currentTitle, navGroupIndex = 4 }) {
   return (
     <div id="navigation">
       <div className="inner">
@@ -94,7 +97,7 @@ export function SubNavigation({ parentTitle = "고객센터", currentTitle }) {
               <ul
                 key={index}
                 id={`mysub${index}`}
-                style={{ display: index === 4 ? "block" : "none" }}
+                style={{ display: index === navGroupIndex ? "block" : "none" }}
               >
                 {items.map((item) => (
                   <li key={item.label} className="leftmenu_s">
@@ -110,9 +113,9 @@ export function SubNavigation({ parentTitle = "고객센터", currentTitle }) {
   );
 }
 
-export function SubVisual({ title, bannerUrl }) {
+export function SubVisual({ title, bannerUrl, subtitle, bannerAsBackground = false }) {
   return (
-    <section className="visual">
+    <section className={`visual${bannerAsBackground ? " visual-bg" : ""}`}>
       <img
         className="visual-banner-img"
         src={bannerUrl}
@@ -123,17 +126,40 @@ export function SubVisual({ title, bannerUrl }) {
       />
       <div className="text_box">
         <h2>{title}</h2>
-        <p className="text" />
+        {subtitle ? <p className="text">{subtitle}</p> : <p className="text" />}
       </div>
     </section>
   );
 }
 
-export default function SubLayout({ pageId, title, bannerUrl, currentNavTitle, children }) {
+export default function SubLayout({
+  pageId,
+  pageClassName = "",
+  title,
+  bannerUrl,
+  visualSubtitle,
+  bannerAsBackground = false,
+  currentNavTitle,
+  navGroupIndex = 4,
+  parentTitle,
+  children,
+}) {
+  const resolvedParentTitle =
+    parentTitle ?? subNavGroups[navGroupIndex]?.title ?? "고객센터";
+
   return (
-    <div className="sub" id={pageId}>
-      <SubVisual title={title} bannerUrl={bannerUrl} />
-      <SubNavigation currentTitle={currentNavTitle} />
+    <div className={`sub${pageClassName ? ` ${pageClassName}` : ""}`} id={pageId}>
+      <SubVisual
+        title={title}
+        bannerUrl={bannerUrl}
+        subtitle={visualSubtitle}
+        bannerAsBackground={bannerAsBackground}
+      />
+      <SubNavigation
+        parentTitle={resolvedParentTitle}
+        currentTitle={currentNavTitle}
+        navGroupIndex={navGroupIndex}
+      />
       {children}
     </div>
   );

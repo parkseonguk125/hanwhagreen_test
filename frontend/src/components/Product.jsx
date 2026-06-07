@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -10,8 +11,6 @@ export default function Product() {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
-  const stop = (e) => e.preventDefault();
-
   return (
     <div className="section product">
       <div className="inner">
@@ -21,9 +20,7 @@ export default function Product() {
             <dd>주요실적 현황</dd>
           </dl>
           <div className="pro_controll">
-            <a href="#" onClick={stop}>
-              자세히 보기
-            </a>
+            <Link to="/bbs/board.php?bo_table=project">자세히 보기</Link>
             <div className="pro_arrow">
               <button
                 ref={prevRef}
@@ -69,12 +66,12 @@ export default function Product() {
             {projects.map((item) => (
               <SwiperSlide key={item.title}>
                 <div className="pro_con">
-                  <a href="#" onClick={stop}>
+                  <Link to={`/bbs/board.php?bo_table=project&wr_id=${item.id}`}>
                     <div className="pro_con_img">
                       <img src={item.image} alt={item.title} />
                     </div>
                     <p>{item.title}</p>
-                  </a>
+                  </Link>
                 </div>
               </SwiperSlide>
             ))}

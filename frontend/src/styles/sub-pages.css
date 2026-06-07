@@ -39,6 +39,18 @@
   color: #fff;
 }
 
+.visual .text_box p.text {
+  font-size: 20px;
+  font-weight: 400;
+  color: #f6f6f6;
+}
+
+.sub .visual.visual-bg {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 #navigation {
   width: 100%;
   position: relative;

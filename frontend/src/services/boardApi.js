@@ -1,6 +1,11 @@
+import {
+  fallbackNoticePosts,
+  fallbackQaPosts,
+  getFallbackNoticePost,
+  getFallbackQaPost,
+} from "../data/boardFallback.js";
 import { getAuthToken } from "./authAccess";
-
-const API_BASE = "/api";
+import { apiFetch } from "./apiClient";
 
 function jsonHeaders(includeAuth = false) {
   const headers = { "Content-Type": "application/json" };
@@ -20,18 +25,30 @@ async function parseResponse(response) {
 }
 
 export async function fetchNoticePosts() {
-  const response = await fetch(`${API_BASE}/notice`);
-  return parseResponse(response);
+  try {
+    const response = await apiFetch("/notice");
+    return await parseResponse(response);
+  } catch {
+    return fallbackNoticePosts.map(({ content: _content, ...post }) => post);
+  }
 }
 
 export async function fetchNoticePost(id, { skipHit = false } = {}) {
-  const query = skipHit ? "?hit=0" : "";
-  const response = await fetch(`${API_BASE}/notice/${id}${query}`);
-  return parseResponse(response);
+  try {
+    const query = skipHit ? "?hit=0" : "";
+    const response = await apiFetch(`/notice/${id}${query}`);
+    return await parseResponse(response);
+  } catch {
+    const post = getFallbackNoticePost(id);
+    if (!post) {
+      throw new Error("게시물을 찾을 수 없습니다.");
+    }
+    return post;
+  }
 }
 
 export async function createNoticePost(payload) {
-  const response = await fetch(`${API_BASE}/notice`, {
+  const response = await apiFetch("/notice", {
     method: "POST",
     headers: jsonHeaders(true),
     body: JSON.stringify(payload),
@@ -40,7 +57,7 @@ export async function createNoticePost(payload) {
 }
 
 export async function updateNoticePost(id, payload) {
-  const response = await fetch(`${API_BASE}/notice/${id}`, {
+  const response = await apiFetch(`/notice/${id}`, {
     method: "PUT",
     headers: jsonHeaders(true),
     body: JSON.stringify(payload),
@@ -49,7 +66,7 @@ export async function updateNoticePost(id, payload) {
 }
 
 export async function deleteNoticePost(id) {
-  const response = await fetch(`${API_BASE}/notice/${id}`, {
+  const response = await apiFetch(`/notice/${id}`, {
     method: "DELETE",
     headers: jsonHeaders(true),
   });
@@ -57,15 +74,31 @@ export async function deleteNoticePost(id) {
 }
 
 export async function fetchQaPosts() {
-  const response = await fetch(`${API_BASE}/qa`);
-  return parseResponse(response);
+  try {
+    const response = await apiFetch("/qa");
+    return await parseResponse(response);
+  } catch {
+    return fallbackQaPosts.map(({ content: _content, ...post }) => post);
+  }
 }
 
 export async function fetchQaPost(id) {
-  const token = getAuthToken();
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
-  const response = await fetch(`${API_BASE}/qa/${id}`, { headers });
-  return parseResponse(response);
+  try {
+    const token = getAuthToken();
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const response = await apiFetch(`/qa/${id}`, { headers });
+    return await parseResponse(response);
+  } catch {
+    const post = getFallbackQaPost(id);
+    if (!post) {
+      throw new Error("게시물을 찾을 수 없습니다.");
+    }
+    if (post.isSecret) {
+      const { content: _content, ...locked } = post;
+      return locked;
+    }
+    return post;
+  }
 }
 
 function appendQaFormFields(formData, payload) {
@@ -90,7 +123,7 @@ export async function createQaPost(payload, file) {
     formData.append("attachment", file);
   }
 
-  const response = await fetch(`${API_BASE}/qa`, {
+  const response = await apiFetch("/qa", {
     method: "POST",
     body: formData,
   });
@@ -104,7 +137,7 @@ export async function updateQaPost(id, payload, file) {
     formData.append("attachment", file);
   }
 
-  const response = await fetch(`${API_BASE}/qa/${id}`, {
+  const response = await apiFetch(`/qa/${id}`, {
     method: "PUT",
     body: formData,
   });
@@ -133,7 +166,7 @@ export async function downloadQaAttachment(id, password) {
     throw new Error("첨부파일을 받으려면 비밀번호 확인이 필요합니다.");
   }
 
-  const response = await fetch(`${API_BASE}/qa/${id}/attachment`, { headers });
+  const response = await apiFetch(`/qa/${id}/attachment`, { headers });
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
     throw new Error(data.message || "첨부파일을 받을 수 없습니다.");
@@ -155,7 +188,7 @@ export async function downloadQaAttachment(id, password) {
 }
 
 export async function deleteQaPost(id, password) {
-  const response = await fetch(`${API_BASE}/qa/${id}`, {
+  const response = await apiFetch(`/qa/${id}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password }),
@@ -164,12 +197,12 @@ export async function deleteQaPost(id, password) {
 }
 
 export async function incrementQaHits(id) {
-  const response = await fetch(`${API_BASE}/qa/${id}/hit`, { method: "POST" });
+  const response = await apiFetch(`/qa/${id}/hit`, { method: "POST" });
   return parseResponse(response);
 }
 
 export async function verifyQaPost(id, password) {
-  const response = await fetch(`${API_BASE}/qa/${id}/verify`, {
+  const response = await apiFetch(`/qa/${id}/verify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ password }),

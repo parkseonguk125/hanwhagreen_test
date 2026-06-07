@@ -942,10 +942,24 @@ h3{   font-family: 'Play', sans-serif;}
     display: flex;justify-content: flex-end;
     align-items: center;
     margin-top:20px;
+    padding-right: 100px;
 }
-.foo-rt .sns li a{
+.foo-rt .sns li a,
+.foo-rt .sns li .sns-icon{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color:#666;
+    line-height: 1;
+}
+.foo-rt .sns li a:hover{
+    color:#333;
+}
+.foo-rt .sns li span{
     font-size: 45px;
     color:#666;
+    display: inline-block;
+    line-height: 1;
 }
 .foo-rt .sns li:not(:last-child){
     margin-right:20px;
@@ -1016,6 +1030,7 @@ h3{   font-family: 'Play', sans-serif;}
     }
     .foo-rt .sns{
         justify-content: flex-start;
+        padding-right: 0;
     }
     .foo-rt .phone li{
         font-size: 16px;
