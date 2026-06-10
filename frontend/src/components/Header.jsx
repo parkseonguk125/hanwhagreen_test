@@ -1,12 +1,36 @@
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Icon from "./Icons";
+import DesktopAllMenu from "./DesktopAllMenu";
+import MobileMenu from "./MobileMenu";
 import { assets, navGroups, topLinks } from "../data/mock";
 import { logoutMember } from "../services/authApi";
 import { clearAuth, getStoredMember, isLoggedIn } from "../services/authAccess";
 import { parseAppHref } from "../utils/navRoutes";
 import { preloadBannerForHref } from "../utils/preloadImage";
+
+const MOBILE_MENU_BREAKPOINT = 1024;
+
+function useIsMobileViewport() {
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.innerWidth <= MOBILE_MENU_BREAKPOINT
+      : false
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      `(max-width: ${MOBILE_MENU_BREAKPOINT}px)`
+    );
+    const sync = () => setIsMobile(mediaQuery.matches);
+
+    sync();
+    mediaQuery.addEventListener("change", sync);
+    return () => mediaQuery.removeEventListener("change", sync);
+  }, []);
+
+  return isMobile;
+}
 
 function AppNavLink({ item, className, onNavigate, onAfterNavigate }) {
   const navigate = useNavigate();
@@ -59,13 +83,21 @@ export default function Header({ hideHamburger = false }) {
   const [expandedMobileGroup, setExpandedMobileGroup] = useState(null);
   const [member, setMember] = useState(() => getStoredMember());
   const [loggingOut, setLoggingOut] = useState(false);
-  const touchStartY = useRef(null);
-  const scrollTargetRef = useRef(0);
-  const scrollRafRef = useRef(null);
+  const isMobileViewport = useIsMobileViewport();
 
   useEffect(() => {
     setMember(isLoggedIn() ? getStoredMember() : null);
   }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    setExpandedMobileGroup(null);
+  }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    setExpandedMobileGroup(null);
+  }, [isMobileViewport]);
 
   const handleLogout = async () => {
     if (loggingOut) return;
@@ -83,7 +115,6 @@ export default function Header({ hideHamburger = false }) {
     clearAuth();
     setMember(null);
 
-    // 같은 주소에서 새로고침 — 로그아웃 후 화면·권한이 한 번 갱신됨
     navigate(0);
   };
 
@@ -94,88 +125,8 @@ export default function Header({ hideHamburger = false }) {
     }
   }, [hideHamburger, menuOpen]);
 
-  useEffect(() => {
-    document.body.classList.toggle("nav-all-open", menuOpen);
-
-    if (!menuOpen) {
-      touchStartY.current = null;
-      if (scrollRafRef.current) {
-        cancelAnimationFrame(scrollRafRef.current);
-        scrollRafRef.current = null;
-      }
-      return undefined;
-    }
-
-    scrollTargetRef.current = window.scrollY;
-
-    const clampScroll = (value) => {
-      const maxScroll = Math.max(
-        0,
-        document.documentElement.scrollHeight - window.innerHeight
-      );
-      return Math.max(0, Math.min(maxScroll, value));
-    };
-
-    const animateScroll = () => {
-      const current = window.scrollY;
-      const delta = scrollTargetRef.current - current;
-
-      if (Math.abs(delta) < 0.5) {
-        window.scrollTo(0, scrollTargetRef.current);
-        scrollRafRef.current = null;
-        return;
-      }
-
-      window.scrollTo(0, current + delta * 0.2);
-      scrollRafRef.current = requestAnimationFrame(animateScroll);
-    };
-
-    const queueScroll = (delta) => {
-      scrollTargetRef.current = clampScroll(scrollTargetRef.current + delta);
-      if (!scrollRafRef.current) {
-        scrollRafRef.current = requestAnimationFrame(animateScroll);
-      }
-    };
-
-    const syncWheelScroll = (event) => {
-      event.preventDefault();
-      queueScroll(event.deltaY);
-    };
-
-    const onTouchStart = (event) => {
-      touchStartY.current = event.touches[0]?.clientY ?? null;
-      scrollTargetRef.current = window.scrollY;
-    };
-
-    const onTouchMove = (event) => {
-      const currentY = event.touches[0]?.clientY;
-      if (currentY == null || touchStartY.current == null) return;
-      event.preventDefault();
-      const delta = touchStartY.current - currentY;
-      touchStartY.current = currentY;
-      queueScroll(delta);
-    };
-
-    const navAll = document.getElementById("nav_all");
-    navAll?.addEventListener("wheel", syncWheelScroll, { passive: false });
-    navAll?.addEventListener("touchstart", onTouchStart, { passive: true });
-    navAll?.addEventListener("touchmove", onTouchMove, { passive: false });
-
-    return () => {
-      document.body.classList.remove("nav-all-open");
-      navAll?.removeEventListener("wheel", syncWheelScroll);
-      navAll?.removeEventListener("touchstart", onTouchStart);
-      navAll?.removeEventListener("touchmove", onTouchMove);
-      if (scrollRafRef.current) {
-        cancelAnimationFrame(scrollRafRef.current);
-        scrollRafRef.current = null;
-      }
-      touchStartY.current = null;
-    };
-  }, [menuOpen]);
-
   const handleMenuEnter = (index) => {
-    if (window.innerWidth > 1050) {
+    if (window.innerWidth > 1024) {
       setHoveredMenu(index);
     }
   };
@@ -195,7 +146,6 @@ export default function Header({ hideHamburger = false }) {
   const closeHoverMenu = () => setHoveredMenu(null);
 
   const toggleMobileGroup = (index) => {
-    if (window.innerWidth > 1240) return;
     setExpandedMobileGroup((prev) => (prev === index ? null : index));
   };
 
@@ -209,56 +159,6 @@ export default function Header({ hideHamburger = false }) {
     setMenuOpen(true);
     setExpandedMobileGroup(null);
   };
-
-  const mobileMenu = (
-    <div id="nav_all" className={menuOpen ? "active" : ""} onClick={closeMenu}>
-      <div
-        id="all_menu"
-        onClick={(event) => event.stopPropagation()}
-        className={menuOpen ? "active" : ""}
-      >
-        <div className="nav_all_logo">
-          <img src={assets.logoWhite} alt="한화그린" />
-        </div>
-        <ul className="menu_ul">
-          {navGroups.map((group, index) => (
-            <li
-              key={group.title}
-              className={`menu_li gnb_al_li_plus${
-                expandedMobileGroup === index ? " is-expanded" : ""
-              }`}
-              style={{ zIndex: 999 - index }}
-            >
-              <button
-                type="button"
-                className={`menu_tit${expandedMobileGroup === index ? " on" : ""}`}
-                onClick={() => toggleMobileGroup(index)}
-              >
-                {group.title} <Icon name="chevron-down" size="sm" />
-              </button>
-              <div className="all_box">
-                <ul className="all_ul">
-                  {group.items.map((item) => (
-                    <li key={item.label} className="all_li">
-                      <AppNavLink item={item} className="all_tit" onNavigate={closeMenu} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          className="all_menu_close"
-          aria-label="메뉴 닫기"
-          onClick={closeMenu}
-        >
-          ×
-        </button>
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -324,7 +224,12 @@ export default function Header({ hideHamburger = false }) {
                   type="button"
                   className="hamburger"
                   aria-label="전체 메뉴"
-                  onClick={openMenu}
+                  aria-expanded={menuOpen}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    openMenu();
+                  }}
                 >
                   <span className="ham_line" />
                   <span className="ham_line" />
@@ -382,9 +287,17 @@ export default function Header({ hideHamburger = false }) {
         </div>
       </header>
 
-      {!hideHamburger && typeof document !== "undefined"
-        ? createPortal(mobileMenu, document.body)
-        : null}
+      {!hideHamburger && isMobileViewport ? (
+        <MobileMenu
+          open={menuOpen}
+          expandedIndex={expandedMobileGroup}
+          onClose={closeMenu}
+          onToggleGroup={toggleMobileGroup}
+        />
+      ) : null}
+      {!hideHamburger && !isMobileViewport ? (
+        <DesktopAllMenu open={menuOpen} onClose={closeMenu} />
+      ) : null}
     </>
   );
 }

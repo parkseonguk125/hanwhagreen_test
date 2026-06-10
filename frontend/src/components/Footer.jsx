@@ -52,7 +52,13 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/bbs/content.php?co_id=map">오시는길</Link>
+                  <a
+                    href={footerInfo.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    오시는길
+                  </a>
                 </li>
               </ul>
               <div

@@ -3,8 +3,11 @@ import { Link } from "react-router-dom";
 import { boardViewRouteTarget } from "../../utils/navRoutes";
 import { boardLinkUrl } from "../../utils/youtube";
 
+const NO_PROFILE = "https://hanwhagreen.com/img/no_profile.gif";
+
 export default function NewsBoardView({ post }) {
   const [commentsOpen, setCommentsOpen] = useState(true);
+  const listTarget = "/bbs/board.php?bo_table=news";
 
   const handleCommentToggle = (event) => {
     event.preventDefault();
@@ -12,7 +15,54 @@ export default function NewsBoardView({ post }) {
   };
 
   return (
-    <article id="bo_v" className="news-board-view" style={{ width: "100%" }}>
+    <article id="bo_v" style={{ width: "100%" }}>
+      <header>
+        <h2 id="bo_v_title">
+          <span className="bo_v_tit">{post.subject}</span>
+        </h2>
+      </header>
+
+      <section id="bo_v_info">
+        <h2>페이지 정보</h2>
+        <div className="profile_info">
+          <div className="pf_img">
+            <img src={NO_PROFILE} alt="profile_image" />
+          </div>
+          <div className="profile_info_ct">
+            <span className="sound_only">작성자</span>{" "}
+            <strong>
+              <span className="sv_member">{post.author || "관리자"}</span>
+            </strong>
+            <br />
+            <span className="sound_only">댓글</span>
+            <strong>
+              <a href="#bo_vc">
+                <i className="fa fa-commenting-o" aria-hidden="true" /> 0건
+              </a>
+            </strong>{" "}
+            <span className="sound_only">조회</span>
+            <strong>
+              <i className="fa fa-eye" aria-hidden="true" /> {post.hits.toLocaleString()}회
+            </strong>{" "}
+            <strong className="if_date">
+              <span className="sound_only">작성일</span>
+              <i className="fa fa-clock-o" aria-hidden="true" /> {post.date}
+            </strong>
+          </div>
+        </div>
+
+        <div id="bo_v_top">
+          <ul className="btn_bo_user bo_v_com">
+            <li>
+              <Link to={listTarget} className="btn_b01 btn" title="목록">
+                <i className="fa fa-list" aria-hidden="true" />
+                <span className="sound_only">목록</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </section>
+
       <section id="bo_v_atc">
         <h2 id="bo_v_atc_title">본문</h2>
         <div id="bo_v_share" />

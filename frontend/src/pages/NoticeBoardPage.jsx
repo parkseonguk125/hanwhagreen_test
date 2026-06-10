@@ -36,6 +36,8 @@ import "../styles/notice-skin.css";
 
 import "../styles/notice-view.css";
 
+import "../styles/notice-board-mobile.css";
+
 
 
 const noticeConfig = {
@@ -232,6 +234,8 @@ export default function NoticeBoardPage() {
 
             pageId={noticeConfig.pageId}
 
+            pageClassName="notice-page"
+
             title={noticeConfig.title}
 
             bannerUrl={noticeConfig.banner}
@@ -270,6 +274,8 @@ export default function NoticeBoardPage() {
           <SubLayout
 
             pageId={noticeConfig.pageId}
+
+            pageClassName="notice-page"
 
             title={noticeConfig.title}
 
@@ -312,6 +318,8 @@ export default function NoticeBoardPage() {
 
           pageId={noticeConfig.pageId}
 
+          pageClassName="notice-page"
+
           title={noticeConfig.title}
 
           bannerUrl={noticeConfig.banner}
@@ -344,6 +352,8 @@ export default function NoticeBoardPage() {
       <SubLayout
 
         pageId={noticeConfig.pageId}
+
+        pageClassName="notice-page"
 
         title={noticeConfig.title}
 

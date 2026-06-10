@@ -5,11 +5,26 @@ import { Navigation } from "swiper/modules";
 import Icon from "./Icons";
 import "swiper/css";
 import "swiper/css/navigation";
-import { projects } from "../data/mock";
+import { projects } from "../data/projects";
+
+/** 메인 페이지 썸네일 — 원본과 동일한 480×420 */
+function mainThumb(url) {
+  return url.replace(/_383x240\.jpg$/, "_480x420.jpg");
+}
 
 export default function Product() {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+
+  const bindNavigation = (swiper) => {
+    if (!prevRef.current || !nextRef.current) return;
+
+    swiper.params.navigation.prevEl = prevRef.current;
+    swiper.params.navigation.nextEl = nextRef.current;
+    swiper.navigation.destroy();
+    swiper.navigation.init();
+    swiper.navigation.update();
+  };
 
   return (
     <div className="section product">
@@ -45,30 +60,33 @@ export default function Product() {
         <div className="pro_contents">
           <Swiper
             modules={[Navigation]}
-            navigation={{
-              prevEl: prevRef.current,
-              nextEl: nextRef.current,
-            }}
-            onBeforeInit={(swiper) => {
-              swiper.params.navigation.prevEl = prevRef.current;
-              swiper.params.navigation.nextEl = nextRef.current;
-            }}
-            slidesPerView={1.2}
-            spaceBetween={20}
+            slidesPerView={1}
+            spaceBetween={0}
+            centeredSlides={false}
+            onBeforeInit={bindNavigation}
+            onInit={bindNavigation}
             breakpoints={{
-              768: { slidesPerView: 2.2 },
-              1024: { slidesPerView: 3.2 },
-              1400: { slidesPerView: 4 },
+              601: {
+                slidesPerView: 1,
+                centeredSlides: true,
+              },
+              901: {
+                slidesPerView: 3,
+                centeredSlides: false,
+              },
             }}
             className="pro_slick"
             watchSlidesProgress
           >
             {projects.map((item) => (
-              <SwiperSlide key={item.title}>
+              <SwiperSlide key={item.id}>
                 <div className="pro_con">
                   <Link to={`/bbs/board.php?bo_table=project&wr_id=${item.id}`}>
                     <div className="pro_con_img">
-                      <img src={item.image} alt={item.title} />
+                      <img
+                        src={mainThumb(item.image)}
+                        alt={item.title}
+                      />
                     </div>
                     <p>{item.title}</p>
                   </Link>

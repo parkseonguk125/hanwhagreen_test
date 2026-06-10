@@ -1,4 +1,5 @@
 import { boardBanners } from "../config/boardBanners";
+import { HANWHA_GREEN_NAVER_DIRECTIONS_URL } from "./mapLinks.js";
 
 export const contentPageConfigs = {
   company: {
@@ -71,8 +72,7 @@ export const contentPageConfigs = {
     navGroupIndex: 0,
     banner: boardBanners.map,
     bannerAsBackground: true,
-    navLink:
-      "https://map.naver.com/index.nhn?elng=128.5198071&elat=36.1074943&etext=%ED%95%9C%ED%99%94%EA%B7%B8%EB%A6%B0&menu=route&pathType=0",
+    navLink: HANWHA_GREEN_NAVER_DIRECTIONS_URL,
     locations: [
       {
         containerId: "daumRoughmapContainer1713010532775",

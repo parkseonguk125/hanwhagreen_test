@@ -6,12 +6,29 @@ import DetailButton from "./DetailButton";
 import Icon from "./Icons";
 import "swiper/css";
 import "swiper/css/navigation";
-import { assets, certificates } from "../data/mock";
+import { assets } from "../data/mock";
+import { certifications } from "../data/certifications";
+
+/** 메인 갤러리 — 세로 원본 우선 (550×320 가로 썸네일은 잘림 발생) */
+function mainCertImage(cert) {
+  if (cert.imageLink) return cert.imageLink;
+  return cert.image.replace(/_550x320\.(jpe?g|png)$/i, "_460x550.$1");
+}
 
 export default function CertGallery() {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const [progress, setProgress] = useState(0);
+
+  const bindNavigation = (swiper) => {
+    if (!prevRef.current || !nextRef.current) return;
+
+    swiper.params.navigation.prevEl = prevRef.current;
+    swiper.params.navigation.nextEl = nextRef.current;
+    swiper.navigation.destroy();
+    swiper.navigation.init();
+    swiper.navigation.update();
+  };
 
   return (
     <div
@@ -57,34 +74,42 @@ export default function CertGallery() {
         <div className="gall_con_wrap">
           <Swiper
             modules={[Navigation]}
-            navigation={{
-              prevEl: prevRef.current,
-              nextEl: nextRef.current,
-            }}
-            onBeforeInit={(swiper) => {
-              swiper.params.navigation.prevEl = prevRef.current;
-              swiper.params.navigation.nextEl = nextRef.current;
-            }}
+            slidesPerView={1}
+            spaceBetween={0}
+            onBeforeInit={bindNavigation}
+            onInit={bindNavigation}
             onProgress={(swiper) => {
               setProgress(Math.max(5, Math.abs(swiper.progress) * 100));
             }}
-            slidesPerView={1.3}
-            spaceBetween={10}
             breakpoints={{
-              768: { slidesPerView: 2.2 },
-              1024: { slidesPerView: 3.2 },
-              1400: { slidesPerView: 4 },
+              901: {
+                slidesPerView: 2,
+                spaceBetween: 0,
+              },
+              1241: {
+                slidesPerView: 3,
+                spaceBetween: 0,
+              },
             }}
             className="gall_contents"
+            autoHeight
+            watchSlidesProgress
           >
-            {certificates.map((cert) => (
-              <SwiperSlide key={cert.title}>
+            {certifications.map((cert) => (
+              <SwiperSlide key={cert.id}>
                 <div className="gall_con">
-                  <Link to={`/bbs/board.php?bo_table=certification&wr_id=${cert.id}`}>
-                    <img src={cert.image} alt={cert.title} />
+                  <Link
+                    to={`/bbs/board.php?bo_table=certification&wr_id=${cert.id}`}
+                  >
+                    <div className="gall_con_img">
+                      <img
+                        src={mainCertImage(cert)}
+                        alt={cert.title}
+                      />
+                    </div>
                     <dl>
-                      <dt style={{ color: "black" }}>{cert.title}</dt>
-                      <dd style={{ color: "#ccc" }}>{cert.desc}</dd>
+                      <dt>{cert.title}</dt>
+                      <dd>{cert.content || cert.subject}</dd>
                     </dl>
                   </Link>
                 </div>

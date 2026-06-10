@@ -47,10 +47,3 @@
   }
 }
 
-@media screen and (max-width: 800px) {
-  #board_list01.construction-page #bo_list .tbl_head01 thead th,
-  #board_list01.construction-page #bo_list .tbl_head01 td {
-    font-size: 13px;
-    padding: 8px 4px;
-  }
-}

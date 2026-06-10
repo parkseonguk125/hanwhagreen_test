@@ -87,36 +87,3 @@
   font-family: "Noto Sans KR", sans-serif;
   color: #333;
 }
-
-@media screen and (max-width: 1200px) {
-  #product01 .lf_box {
-    width: 100%;
-    float: none;
-    text-align: center;
-  }
-
-  #product01 .rt_box {
-    width: 100%;
-    float: none;
-    text-align: center;
-    height: auto;
-  }
-
-  #product01 .rt_box .moreBtn {
-    margin: 40px auto 0 auto;
-  }
-
-  #product01 .rt_box strong.tit {
-    font-size: 26px;
-  }
-
-  #product01 .viewSkin .textBox .title2 {
-    font-size: 3em;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  #product01 .lf_box img {
-    width: 100%;
-  }
-}

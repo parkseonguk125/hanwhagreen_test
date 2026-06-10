@@ -9,7 +9,7 @@ export const newsPosts = [
     id: 3,
     subject: "한화그린 농장폐수 농업기술 폐수처리 하수처리 액비화",
     author: "관리자",
-    hits: 4712,
+    hits: 4789,
     date: "24-04-09 19:17",
     listDate: "04-09",
     content: "한화그린 농장폐수 농업기술 폐수처리 하수처리 액비화",
@@ -30,7 +30,7 @@ export const newsPosts = [
     subject:
       "[채영국의 한돈사랑TV - 현장검증기] 한돈농가 최대숙원! 악취문제 전격해결!",
     author: "관리자",
-    hits: 4812,
+    hits: 4885,
     date: "24-04-09 19:16",
     listDate: "04-09",
     content:
@@ -56,7 +56,7 @@ export const newsPosts = [
     subject:
       "인류최강 축산분뇨정화처리기업, 독보적인 기술력, 극강의 소통력, (주)한화그린, 매일경제TV 극찬기업 20230317 김용우 대표이사 독점 영상",
     author: "관리자",
-    hits: 4234,
+    hits: 4297,
     date: "24-04-09 19:07",
     listDate: "04-09",
     listSubject:

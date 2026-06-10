@@ -6,6 +6,10 @@ import App from "./App";
 import "aos/dist/aos.css";
 import "./styles/hanwha.css";
 import "./styles/overrides.css";
+import "./styles/mobile-menu.css";
+import "./styles/product-section.css";
+import "./styles/gallery-section.css";
+import "./styles/home-mobile.css";
 
 AOS.init({ duration: 1200, once: true });
 

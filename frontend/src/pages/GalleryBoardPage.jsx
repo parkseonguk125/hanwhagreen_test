@@ -23,7 +23,9 @@ import "../styles/sub-pages.css";
 import "../styles/board.css";
 import "../styles/board-pages.css";
 import "../styles/project-page.css";
+import "../styles/project-page-mobile.css";
 import "../styles/certification-page.css";
+import "../styles/certification-page-mobile.css";
 
 const galleryConfigs = {
   project: {

@@ -1,3 +1,5 @@
+import { HANWHA_GREEN_NAVER_DIRECTIONS_URL } from "../config/mapLinks.js";
+
 const ASSET = "https://hanwhagreen.com";
 
 export const assets = {
@@ -112,6 +114,7 @@ export const footerInfo = {
   email: "hanwhagreen@hanmail.net",
   phone: "054-977-4700",
   hours: "월~금 07:30 ~ 16:30",
+  mapUrl: HANWHA_GREEN_NAVER_DIRECTIONS_URL,
   youtubeUrl:
     "https://www.youtube.com/@%ED%95%9C%ED%99%94%EA%B7%B8%EB%A6%B0%EC%A3%BC%EC%8B%9D%ED%9A%8C%EC%82%AC",
 };

@@ -18,7 +18,9 @@ import "../styles/company-page.css";
 import "../styles/ceo-page.css";
 import "../styles/map-page.css";
 import "../styles/technology-page.css";
+import "../styles/technology-page-mobile.css";
 import "../styles/construction-page.css";
+import "../styles/construction-page-mobile.css";
 import "../styles/board-pages.css";
 
 function renderContent(config) {

@@ -12,15 +12,19 @@ export default function NoticeBoardList({ posts }) {
         <caption>공지사항 목록</caption>
         <thead>
           <tr>
-            <th scope="col">번호</th>
-            <th scope="col">제목</th>
+            <th scope="col" className="th_num">
+              번<span className="th_sp" />호
+            </th>
+            <th scope="col" className="th_subject">
+              제<span className="th_sp" />목
+            </th>
             <th scope="col" className="col4">
               글쓴이
             </th>
             <th scope="col" className="col5">
               <Link to={{ ...listUrl, search: "?bo_table=notice&sst=wr_hit&sod=desc" }}>조회 </Link>
             </th>
-            <th scope="col" className="col6">
+            <th scope="col" className="col6 th_date">
               <Link to={{ ...listUrl, search: "?bo_table=notice&sst=wr_datetime&sod=desc" }}>날짜 </Link>
             </th>
           </tr>
@@ -46,13 +50,16 @@ export default function NoticeBoardList({ posts }) {
                 <td className="td_subject" style={{ paddingLeft: 0 }}>
                   <div className="bo_tit">
                     <Link to={boardViewRouteTarget("notice", post.id)}>{post.subject}</Link>
+                    <i className="fa fa-heart" aria-hidden="true" />
                   </div>
                 </td>
                 <td className="td_name sv_use">
                   <span className="sv_member">{post.author}</span>
                 </td>
                 <td className="td_num">{post.hits}</td>
-                <td className="td_datetime">{post.date}</td>
+                <td className="td_datetime">
+                  <span className="notice_date_txt">{post.date}</span>
+                </td>
               </tr>
             ))
           )}
@@ -63,10 +70,29 @@ export default function NoticeBoardList({ posts }) {
 }
 
 export function NewsBoardList({ posts }) {
+  const listUrl = boardRouteTarget("news");
+
   return (
     <div className="tbl_head01 tbl_wrap">
       <table>
         <caption>홍보영 목록</caption>
+        <thead>
+          <tr>
+            <th scope="col" className="th_num">
+              번<span className="th_sp" />호
+            </th>
+            <th scope="col" className="th_subject">
+              제<span className="th_sp" />목
+            </th>
+            <th scope="col" className="th_name">글쓴이</th>
+            <th scope="col" className="th_hit">
+              <Link to={{ ...listUrl, search: "?bo_table=news&sst=wr_hit&sod=desc" }}>조회 </Link>
+            </th>
+            <th scope="col" className="th_date">
+              <Link to={{ ...listUrl, search: "?bo_table=news&sst=wr_datetime&sod=desc" }}>날짜 </Link>
+            </th>
+          </tr>
+        </thead>
         <tbody>
           {posts.length === 0 ? (
             <tr>
@@ -75,22 +101,32 @@ export function NewsBoardList({ posts }) {
           ) : (
             posts.map((post, index) => (
               <tr key={post.id} className={index % 2 ? "even" : ""}>
-                <td className="td_num2">{post.id}</td>
-                <td className="td_subject" style={{ paddingLeft: 0 }}>
+                <td className="td_num2">
+                  <span className="bo_cell_txt">{post.id}</span>
+                </td>
+                <td className="td_subject">
                   <div className="bo_tit">
                     <Link to={boardViewRouteTarget("news", post.id)}>
                       {post.listSubject || post.subject}
                     </Link>
                     <i className="fa fa-heart" aria-hidden="true" />
-                    <i className="fa fa-download" aria-hidden="true" />
-                    <i className="fa fa-link" aria-hidden="true" />
+                    {(post.imageLink || post.relatedLink) && (
+                      <span className="bo_tit_icons">
+                        {post.imageLink && <i className="fa fa-download" aria-hidden="true" />}
+                        {post.relatedLink && <i className="fa fa-link" aria-hidden="true" />}
+                      </span>
+                    )}
                   </div>
                 </td>
-                <td className="td_name sv_use">
-                  <span className="sv_member">{post.author}</span>
+                <td className="td_name">
+                  <span className="bo_cell_txt bo_cell_author">{post.author || "관리자"}</span>
                 </td>
-                <td className="td_num">{post.hits}</td>
-                <td className="td_datetime">{post.listDate || post.date}</td>
+                <td className="td_num">
+                  <span className="bo_cell_txt bo_cell_hit">{post.hits ?? 0}</span>
+                </td>
+                <td className="td_datetime">
+                  <span className="bo_cell_txt bo_cell_date">{post.listDate || post.date}</span>
+                </td>
               </tr>
             ))
           )}

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import AOS from "aos";
 
 const PLAY_BTN =
   "https://hanwhagreen.com/html/typhoon_html/images/play-btn.png";
@@ -38,6 +39,10 @@ function TechnologyAnswer({ item }) {
 
 export default function TechnologyPageContent({ config }) {
   const [openIndex, setOpenIndex] = useState(null);
+
+  useEffect(() => {
+    AOS.refresh();
+  }, []);
 
   const toggleItem = (index) => {
     setOpenIndex((prev) => (prev === index ? null : index));
@@ -100,7 +105,7 @@ export default function TechnologyPageContent({ config }) {
         <div className="sec1">
           <div className="sec3-inner">
             <ul>
-              <li>
+              <li data-aos="fade-up">
                 <h4>기술목표</h4>
                 <dl style={{ height: "auto" }}>
                   {config.goals.map((goal) => (
@@ -110,7 +115,7 @@ export default function TechnologyPageContent({ config }) {
                   ))}
                 </dl>
               </li>
-              <li>
+              <li data-aos="fade-up" data-aos-delay="200">
                 <h4>기술개요</h4>
                 <dl style={{ height: "auto" }}>
                   {config.overview.map((item) => (

@@ -12,8 +12,9 @@ import {
 import "../styles/default.css";
 import "../styles/board-base.css";
 import "../styles/board-pages.css";
-import "../styles/notice-skin.css";
+import "../styles/news-skin.css";
 import "../styles/news-board.css";
+import "../styles/news-board-mobile.css";
 
 export default function NewsBoardPage() {
   const [searchParams] = useSearchParams();
@@ -66,7 +67,7 @@ export default function NewsBoardPage() {
   return (
     <>
       <Header />
-      <main className="main news-board-page sub">
+      <main className="main news-board-page">
         <div className="news-view-wrap news-list-wrap">
           <div id="bo_list" style={{ width: "100%" }}>
             <NewsBoardList posts={newsPosts} />
