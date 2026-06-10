@@ -146,15 +146,19 @@ export function QaBoardList({ posts }) {
         <caption>고객지원 목록</caption>
         <thead>
           <tr>
-            <th scope="col">진행상황</th>
-            <th scope="col">제목</th>
+            <th scope="col" className="th_status">
+              진행상황
+            </th>
+            <th scope="col" className="th_subject">
+              제목
+            </th>
             <th scope="col" className="col4">
               글쓴이
             </th>
             <th scope="col" className="col5">
               <Link to={{ ...listUrl, search: "?bo_table=qa&sst=wr_hit&sod=desc" }}>조회 </Link>
             </th>
-            <th scope="col" className="col6">
+            <th scope="col" className="col6 th_date">
               <Link to={{ ...listUrl, search: "?bo_table=qa&sst=wr_datetime&sod=desc" }}>날짜 </Link>
             </th>
           </tr>
@@ -191,13 +195,18 @@ export function QaBoardList({ posts }) {
                       )}
                       {post.subject}
                     </Link>
+                    {post.hasAttachment && (
+                      <i className="fa fa-download" aria-hidden="true" />
+                    )}
                   </div>
                 </td>
                 <td className="td_name sv_use">
                   <span className="sv_guest">{post.author}</span>
                 </td>
                 <td className="td_num">{post.hits}</td>
-                <td className="td_datetime">{post.date}</td>
+                <td className="td_datetime">
+                  <span className="qa_date_txt">{post.listDate || post.date}</span>
+                </td>
               </tr>
             ))
           )}

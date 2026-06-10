@@ -18,10 +18,12 @@ export const fallbackQaPosts = [
     id: 18,
     status: "접수완료",
     isSecret: true,
-    subject: "온라인 문의",
-    author: "고객",
+    subject:
+      "카지노 솔루션 | 슬롯 솔루션 | 홀덤 솔루션 | 라이브 홀덤 솔루션 | 에보소프트",
+    author: "토지노 솔루션",
     hits: 1,
     date: "02-09",
+    listDate: "02-09",
     viewDate: "2026-02-09",
     content: "온라인 문의드립니다.",
     email: "",
@@ -29,7 +31,7 @@ export const fallbackQaPosts = [
     link1: "",
     link2: "",
     attachmentName: "",
-    hasAttachment: false,
+    hasAttachment: true,
     receiveMail: true,
   },
 ];

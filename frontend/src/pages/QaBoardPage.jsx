@@ -20,6 +20,7 @@ import "../styles/board.css";
 import "../styles/board-pages.css";
 import "../styles/qna-skin.css";
 import "../styles/notice-view.css";
+import "../styles/qa-board-mobile.css";
 
 const qaConfig = {
   pageId: "qna",
@@ -123,6 +124,7 @@ export default function QaBoardPage() {
 
   const layoutProps = {
     pageId: qaConfig.pageId,
+    pageClassName: "qa-page",
     title: qaConfig.title,
     bannerUrl: qaConfig.banner,
     currentNavTitle: qaConfig.navTitle,
