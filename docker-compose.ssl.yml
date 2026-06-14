@@ -1,0 +1,30 @@
+# EC2 HTTPS — Let's Encrypt (certbot)
+# 최초 1회: ./scripts/ssl-init.sh
+# 갱신: ./scripts/ssl-renew.sh (cron 권장)
+# 실행: docker compose -f docker-compose.yml -f docker-compose.ec2.yml -f docker-compose.ssl.yml up -d --build
+
+services:
+  web:
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    volumes:
+      - ./nginx/ssl-active.conf:/etc/nginx/http.d/default.conf:ro
+      - certbot_conf:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+
+volumes:
+  certbot_conf:
+  certbot_www:

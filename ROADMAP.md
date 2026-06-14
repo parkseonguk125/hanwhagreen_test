@@ -17,9 +17,10 @@
 - [x] 4. Git + GitHub — https://github.com/parkseonguk125/hanwhagreen_test
 - [x] 5. AWS EC2 배포 — [docs/AWS_EC2_배포_안내.md](docs/AWS_EC2_배포_안내.md), `scripts/ec2-*.sh` (본인 AWS에서 실행)
 - [x] 6. EC2 공인 IP 접속 확인 — `http://13.209.17.85/`
-- [ ] 7. 도메인 연결 — [docs/도메인_연결_안내.md](docs/도메인_연결_안내.md) (무료: DuckDNS)
-- [x] **8. 미구현 GNB 메뉴 페이지** — ABOUT US, BUSINESS, 회사실적, 지식산업권 (정적·갤러리)
-- [x] **9. Playwright E2E** — [docs/Playwright_안내.md](docs/Playwright_안내.md), `e2e/tests/`
+- [x] 7. 도메인 연결 — [docs/도메인_연결_안내.md](docs/도메인_연결_안내.md) (무료: DuckDNS)
+- [ ] 8. HTTPS (Let's Encrypt) — [docs/HTTPS_안내.md](docs/HTTPS_안내.md), `scripts/ssl-*.sh`
+- [x] **9. 미구현 GNB 메뉴 페이지** — ABOUT US, BUSINESS, 회사실적, 지식산업권 (정적·갤러리)
+- [x] **10. Playwright E2E** — [docs/Playwright_안내.md](docs/Playwright_안내.md), `e2e/tests/`
 
 ## 문서
 
@@ -27,6 +28,7 @@
 - [docs/프로젝트_구조_안내.md](docs/프로젝트_구조_안내.md) — 폴더·파일 설명
 - [docs/AWS_EC2_배포_안내.md](docs/AWS_EC2_배포_안내.md) — **5~6번** EC2 배포·접속 확인
 - [docs/도메인_연결_안내.md](docs/도메인_연결_안내.md) — **7번** 무료 도메인 (DuckDNS)
+- [docs/HTTPS_안내.md](docs/HTTPS_안내.md) — **HTTPS** Let's Encrypt (EC2)
 - [docs/Playwright_안내.md](docs/Playwright_안내.md) — E2E 테스트 실행법
 
 ## 3번 구현 요약
