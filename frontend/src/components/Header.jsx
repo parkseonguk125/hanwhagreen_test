@@ -188,10 +188,13 @@ export default function Header({ hideHamburger = false }) {
                 );
               })}
             </ul>
-            <div className="logo">
-              <Link to="/" onClick={closeHoverMenu}>
-                <img src={assets.logoBlack} alt="한화그린" />
-              </Link>
+            <div className="logo-brand">
+              <div className="logo">
+                <Link to="/" onClick={closeHoverMenu}>
+                  <img src={assets.logoBlack} alt="한화그린" />
+                </Link>
+              </div>
+              <span className="clone-coding-badge">클론 코딩 작업</span>
             </div>
             <div className="userBox">
               <ul>

@@ -53,9 +53,9 @@ export const navGroups = [
 ];
 
 export const introLines = [
-  "한화그린은",
-  "녹색환경의 선두주자로서",
-  "지속적으로 성장하는 벤처기업입니다.",
+  "이 사이트는 클론 코딩으로 모방한",
+  "홈페이지 작업물 입니다.",
+  "작업자 : 박성욱",
 ];
 
 export const areaTabs = [

@@ -21,9 +21,24 @@
     padding: 15px 0 !important;
   }
 
-  #header .logo {
+  #header .logo-brand {
+    position: inherit !important;
+    left: auto !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+    z-index: auto;
+  }
+
+  #header .logo-brand .logo {
     position: inherit !important;
     transform: none !important;
+  }
+
+  #header .clone-coding-badge {
+    font-size: 10px !important;
+    color: #666 !important;
   }
 
   /* hero — max-width:1540px + 1240px */

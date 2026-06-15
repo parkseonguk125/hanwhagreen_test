@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import DetailButton from "./DetailButton";
 import Icon from "./Icons";
-import { areaTabs, assets, introLines } from "../data/mock";
+import { areaTabs, assets } from "../data/mock";
+
+const cloneCreditLines = [
+  "이 사이트는 클론 코딩으로 모방한",
+  "홈페이지 작업물 입니다.",
+  "작업자 : 박성욱",
+];
 
 const areaLinks = [
   "/bbs/content.php?co_id=company",
@@ -14,15 +20,23 @@ export default function AreaSection() {
   const titleRef = useRef(null);
 
   useEffect(() => {
+    const playTitleAnimation = (root) => {
+      root?.querySelectorAll(".area_tit_ani").forEach((el, i) => {
+        setTimeout(() => el.classList.add("on"), i * 180);
+      });
+    };
+
+    if (titleRef.current) {
+      playTitleAnimation(titleRef.current);
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          entry.target.querySelectorAll(".area_tit_ani").forEach((el, i) => {
-            setTimeout(() => el.classList.add("on"), i * 180);
-          });
+          playTitleAnimation(entry.target);
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.15 }
     );
 
     if (titleRef.current) observer.observe(titleRef.current);
@@ -34,8 +48,8 @@ export default function AreaSection() {
       <div className="inner">
         <div className="area_tit_wrap" ref={titleRef}>
           <div className="area_tit">
-            {introLines.map((line) => (
-              <div className="area_tit_ani" key={line}>
+            {cloneCreditLines.map((line) => (
+              <div className="area_tit_ani clone-credit-line" key={line}>
                 <p className="title">{line}</p>
               </div>
             ))}
