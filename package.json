@@ -6,7 +6,10 @@
     "test:e2e": "playwright test -c e2e/playwright.config.js",
     "test:e2e:ui": "playwright test -c e2e/playwright.config.js --ui",
     "test:e2e:report": "playwright show-report",
-    "test:e2e:demo": "playwright test -c e2e/playwright.config.js e2e/tests/demo-browse.spec.js --headed --workers=1"
+    "test:e2e:demo": "playwright test -c e2e/playwright.config.js e2e/tests/demo-browse.spec.js --headed --workers=1",
+    "test:e2e:db-error": "playwright test -c e2e/playwright.config.js e2e/tests/demo-db-error-notify.spec.js --headed --workers=1",
+    "local:db-error": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/local-db-error-trigger.ps1",
+    "local:db-fix": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/local-db-error-fix.ps1"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1"

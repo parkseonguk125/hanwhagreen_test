@@ -14,6 +14,6 @@ ENV PORT=3000
 EXPOSE 3000
 
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 --start-period=15s \
-  CMD wget -qO- http://127.0.0.1:3000/api/health || exit 1
+  CMD wget -qO- http://127.0.0.1:3000/api/ping || exit 1
 
 CMD ["node", "src/server.js"]

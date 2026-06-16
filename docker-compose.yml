@@ -58,6 +58,9 @@ services:
 
       QA_UPLOAD_DIR: /app/uploads/qa
 
+    env_file:
+      - .env
+
     volumes:
 
       - qa_uploads:/app/uploads/qa
@@ -72,7 +75,7 @@ services:
 
     healthcheck:
 
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/ping"]
 
       interval: 10s
 

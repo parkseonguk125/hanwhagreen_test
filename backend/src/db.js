@@ -14,6 +14,10 @@ const pool = new Pool({
     "postgres://hanwha:hanwha_local@localhost:5432/hanwhagreen",
 });
 
+pool.on("error", (err) => {
+  console.error("[db] pool idle client error:", err.message);
+});
+
 function formatBoardDate(value) {
   const date = value instanceof Date ? value : new Date(value);
   const month = String(date.getMonth() + 1).padStart(2, "0");
