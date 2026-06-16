@@ -1,7 +1,7 @@
 import { checkDbHealth } from "../db.js";
 import { notifyDbFailure, notifyDbRecovered } from "./notify.js";
 
-const INTERVAL_MS = Number(process.env.DB_HEALTH_CHECK_MS) || 15_000;
+const INTERVAL_MS = Number(process.env.DB_HEALTH_CHECK_MS ?? 15_000);
 let timer = null;
 let lastOk = true;
 

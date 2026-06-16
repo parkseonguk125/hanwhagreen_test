@@ -1,4 +1,4 @@
-const COOLDOWN_MS = Number(process.env.NOTIFY_COOLDOWN_MS) || 5 * 60 * 1000;
+const COOLDOWN_MS = Number(process.env.NOTIFY_COOLDOWN_MS ?? 5 * 60 * 1000);
 const lastSent = new Map();
 
 function isEnabled() {
