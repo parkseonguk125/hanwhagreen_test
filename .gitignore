@@ -31,3 +31,8 @@ nginx/ssl-active.conf
 # 스크래핑·덤프 임시 파일
 scripts/*.txt
 scripts/*.json
+
+# DB 백업·사전점검 결과 (Git 제외, backups/.gitkeep 만 커밋)
+backups/*.sql
+backups/pre-check_*.txt
+backups/pre-check_latest.txt

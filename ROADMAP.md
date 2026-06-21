@@ -21,6 +21,8 @@
 - [ ] 8. HTTPS (Let's Encrypt) — [docs/HTTPS_안내.md](docs/HTTPS_안내.md), `scripts/ssl-*.sh`
 - [x] **9. 미구현 GNB 메뉴 페이지** — ABOUT US, BUSINESS, 회사실적, 지식산업권 (정적·갤러리)
 - [x] **10. Playwright E2E** — [docs/Playwright_안내.md](docs/Playwright_안내.md), `e2e/tests/`
+- [ ] **11. DB 백업·복원** — [docs/DB_백업_복원_안내.md](docs/DB_백업_복원_안내.md), `scripts/db-backup.sh`, `scripts/db-restore.sh`
+- [ ] **12. EC2 서버 삭제·복구 연습** — [docs/서버_삭제_복구_연습_안내.md](docs/서버_삭제_복구_연습_안내.md), `scripts/ec2-pre-check.sh`
 
 ## 문서
 
@@ -30,6 +32,8 @@
 - [docs/도메인_연결_안내.md](docs/도메인_연결_안내.md) — **7번** 무료 도메인 (DuckDNS)
 - [docs/HTTPS_안내.md](docs/HTTPS_안내.md) — **HTTPS** Let's Encrypt (EC2)
 - [docs/Playwright_안내.md](docs/Playwright_안내.md) — E2E 테스트 실행법
+- [docs/DB_백업_복원_안내.md](docs/DB_백업_복원_안내.md) — **11번** DB 백업·복원
+- [docs/서버_삭제_복구_연습_안내.md](docs/서버_삭제_복구_연습_안내.md) — **12번** EC2 삭제·복구 연습
 
 ## 3번 구현 요약
 
