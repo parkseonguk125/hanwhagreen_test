@@ -2,6 +2,7 @@ import express from "express";
 import authRouter from "./routes/auth.js";
 import noticeRouter from "./routes/notice.js";
 import qaRouter from "./routes/qa.js";
+import liveDataRouter from "./routes/liveData.js";
 import { checkDbHealth, initDb } from "./db.js";
 import { ensureQaUploadDir } from "./qaFiles.js";
 import { startDbHealthMonitor } from "./services/dbHealthMonitor.js";
@@ -50,6 +51,7 @@ app.get("/api/health", async (_req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/notice", noticeRouter);
 app.use("/api/qa", qaRouter);
+app.use("/api/live", liveDataRouter);
 
 app.use((err, req, res, _next) => {
   console.error(err);

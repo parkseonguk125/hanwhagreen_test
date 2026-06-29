@@ -10,6 +10,8 @@ import "./styles/mobile-menu.css";
 import "./styles/product-section.css";
 import "./styles/gallery-section.css";
 import "./styles/home-mobile.css";
+import "./styles/live-info.css";
+import "./styles/live-info-mobile.css";
 
 AOS.init({ duration: 1200, once: true });
 

@@ -5,6 +5,9 @@ WORKDIR /app
 COPY frontend/package*.json ./
 RUN npm install
 
+ARG VITE_NAVER_MAP_CLIENT_ID
+ENV VITE_NAVER_MAP_CLIENT_ID=$VITE_NAVER_MAP_CLIENT_ID
+
 COPY frontend/ ./
 RUN npm run build
 

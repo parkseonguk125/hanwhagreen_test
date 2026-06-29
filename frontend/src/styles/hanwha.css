@@ -653,7 +653,7 @@ h3{   font-family: 'Play', sans-serif;}
 
 .news_lt,.news_rt{width:46%}
 .news_tit{display: flex;align-items: center;justify-content: space-between;}
-.news_tit .title{font-size: 30px;}
+.news_tit .title{font-size: 30px;margin: 0;font-weight: inherit;}
 .news_tit span{font-size: 45px;font-weight: 100;cursor: pointer;}
 
 .news_contents{width:100%;margin-top: 20px;}

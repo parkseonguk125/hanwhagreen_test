@@ -2,7 +2,10 @@ services:
 
   web:
 
-    build: .
+    build:
+      context: .
+      args:
+        VITE_NAVER_MAP_CLIENT_ID: ${VITE_NAVER_MAP_CLIENT_ID:-}
 
     image: hanwhagreen-web2:local
 

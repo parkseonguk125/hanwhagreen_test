@@ -4,6 +4,7 @@ import AreaSection from "../components/AreaSection";
 import Product from "../components/Product";
 import CertGallery from "../components/CertGallery";
 import NewsSection from "../components/NewsSection";
+import LiveInfoSection from "../components/live/LiveInfoSection";
 import Footer from "../components/Footer";
 
 export default function HomePage() {
@@ -12,6 +13,7 @@ export default function HomePage() {
       <Header />
       <main className="main">
         <Hero />
+        <LiveInfoSection />
         <AreaSection />
         <Product />
         <CertGallery />
