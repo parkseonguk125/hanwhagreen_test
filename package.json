@@ -8,8 +8,13 @@
     "test:e2e:report": "playwright show-report",
     "test:e2e:demo": "playwright test -c e2e/playwright.config.js e2e/tests/demo-browse.spec.js --headed --workers=1",
     "test:e2e:db-error": "playwright test -c e2e/playwright.config.js e2e/tests/demo-db-error-notify.spec.js --headed --workers=1",
+    "test:e2e:security-s2": "playwright test -c e2e/playwright.config.js e2e/tests/demo-security-s2-rate-limit.spec.js --workers=1",
+    "test:e2e:security-s3": "playwright test -c e2e/playwright.config.js e2e/tests/demo-security-s3-maintenance.spec.js --workers=1",
     "local:db-error": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/local-db-error-trigger.ps1",
-    "local:db-fix": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/local-db-error-fix.ps1"
+    "local:db-fix": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/local-db-error-fix.ps1",
+    "local:security-s1": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-drill-s1.ps1",
+    "local:security-s2": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-drill-s2.ps1",
+    "local:security-snapshot": "bash scripts/security-incident-snapshot.sh"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1"

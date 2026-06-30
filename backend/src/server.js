@@ -1,4 +1,5 @@
 import express from "express";
+import { getClientIp, logSecurityEvent } from "./middleware/securityLogger.js";
 import authRouter from "./routes/auth.js";
 import noticeRouter from "./routes/notice.js";
 import qaRouter from "./routes/qa.js";
@@ -29,7 +30,24 @@ app.use((req, res, next) => {
   next();
 });
 
+app.set("trust proxy", 1);
 app.use(express.json({ limit: "1mb" }));
+
+app.use((req, res, next) => {
+  res.on("finish", () => {
+    if (res.statusCode !== 401 && res.statusCode !== 403) return;
+    const path = req.originalUrl || req.url || "";
+    if (!path.startsWith("/api/")) return;
+    if (path.startsWith("/api/auth/login")) return;
+    logSecurityEvent({
+      event: "auth_denied",
+      severity: 1,
+      ip: getClientIp(req),
+      detail: `${req.method} ${path} status=${res.statusCode}`,
+    });
+  });
+  next();
+});
 
 app.get("/api/ping", (_req, res) => {
   res.json({ status: "up" });

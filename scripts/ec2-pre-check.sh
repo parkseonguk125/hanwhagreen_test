@@ -69,6 +69,34 @@ run() {
   docker volume ls --filter name=qa_uploads 2>&1 || true
   run ""
 
+  if docker ps --format '{{.Names}}' | grep -qx hanwhagreen-db; then
+    run "--- 보안: 활성 세션 ---"
+    docker exec hanwhagreen-db psql -U hanwha -d hanwhagreen -t -c \
+      "SELECT 'member_sessions', COUNT(*) FROM member_sessions;" 2>&1
+    run ""
+  fi
+
+  run "--- 보안: 유지보수 모드 ---"
+  if [ -f nginx/flags/maintenance.on ]; then
+    run "  [ON] nginx/flags/maintenance.on"
+  else
+    run "  [OFF] 유지보수 모드 아님"
+  fi
+  run ""
+
+  run "--- 보안: 호스트 도구 (EC2) ---"
+  if command -v ufw >/dev/null 2>&1; then
+    ufw status 2>&1 | head -5 || run "  ufw 상태 조회 실패"
+  else
+    run "  ufw: 미설치"
+  fi
+  if command -v fail2ban-client >/dev/null 2>&1; then
+    fail2ban-client status 2>&1 | head -5 || run "  fail2ban 미동작"
+  else
+    run "  fail2ban: 미설치"
+  fi
+  run ""
+
   run "=== 점검 완료 ==="
   run "이 파일을 복구 후 비교하세요: $REPORT"
 } | tee "$REPORT"

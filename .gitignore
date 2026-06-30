@@ -36,3 +36,6 @@ scripts/*.json
 backups/*.sql
 backups/pre-check_*.txt
 backups/pre-check_latest.txt
+backups/incident_*/
+backups/blocked-ips.log
+nginx/flags/maintenance.on

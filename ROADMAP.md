@@ -23,6 +23,7 @@
 - [x] **10. Playwright E2E** — [docs/Playwright_안내.md](docs/Playwright_안내.md), `e2e/tests/`
 - [ ] **11. DB 백업·복원** — [docs/DB_백업_복원_안내.md](docs/DB_백업_복원_안내.md), `scripts/db-backup.sh`, `scripts/db-restore.sh`
 - [ ] **12. EC2 서버 삭제·복구 연습** — [docs/서버_삭제_복구_연습_안내.md](docs/서버_삭제_복구_연습_안내.md), `scripts/ec2-pre-check.sh`
+- [ ] **13. 모의해킹 대비훈련 (S1~S4)** — [docs/모의해킹_대비훈련_개요.md](docs/모의해킹_대비훈련_개요.md), `scripts/security-*.sh` (EC2 반영은 마지막)
 
 ## 문서
 
@@ -34,6 +35,7 @@
 - [docs/Playwright_안내.md](docs/Playwright_안내.md) — E2E 테스트 실행법
 - [docs/DB_백업_복원_안내.md](docs/DB_백업_복원_안내.md) — **11번** DB 백업·복원
 - [docs/서버_삭제_복구_연습_안내.md](docs/서버_삭제_복구_연습_안내.md) — **12번** EC2 삭제·복구 연습
+- [docs/모의해킹_대비훈련_개요.md](docs/모의해킹_대비훈련_개요.md) — **13번** 모의해킹 S1~S4 (EC2는 마지막)
 
 ## 3번 구현 요약
 

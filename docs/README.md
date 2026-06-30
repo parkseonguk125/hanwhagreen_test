@@ -6,6 +6,7 @@
 | [DB확인_안내.md](./DB확인_안내.md) | PostgreSQL 연결·확인 방법 |
 | [외부접속_안내.md](./외부접속_안내.md) | Cloudflare 터널로 공개 URL |
 | [로그인_안내.md](./로그인_안내.md) | DB 회원 로그인, 임시 admin 계정 |
+| [모의해킹_대비훈련_개요.md](./모의해킹_대비훈련_개요.md) | S1~S4 침해 대응 연습 (로컬 먼저, EC2 마지막) |
 | [reference/](./reference/) | 원본 사이트(hanwhagreen.com) 참고용 HTML/CSS |
 
 프로젝트 루트의 [ROADMAP.md](../ROADMAP.md) 에는 앞으로 할 작업 목록이 있습니다.

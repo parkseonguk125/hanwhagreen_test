@@ -50,7 +50,20 @@ server {
 
     charset utf-8;
 
+    access_log /var/log/nginx/access.log combined;
 
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    location = /maintenance.html {
+        root /etc/nginx/maintenance;
+        add_header Retry-After 3600 always;
+    }
+
+    if (-f /etc/nginx/flags/maintenance.on) {
+        rewrite ^ /maintenance.html break;
+    }
 
     location /api/ {
 
