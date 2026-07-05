@@ -17,6 +17,15 @@ COMPOSE_FILES="-f docker-compose.yml -f docker-compose.ec2.yml"
 if [ -f nginx/ssl-active.conf ] && [ -f .env.ssl ]; then
   COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.ssl.yml"
   echo "=== HTTPS 설정 감지 — SSL compose 포함 ==="
+  if [ -f nginx/default.ssl.conf.template ]; then
+    # shellcheck disable=SC1091
+    source .env.ssl
+    if [ -n "${SSL_DOMAIN:-}" ]; then
+      DOMAIN_ESCAPED="$(printf '%s' "$SSL_DOMAIN" | sed -e 's/[\/&]/\\&/g')"
+      sed "s/__SSL_DOMAIN__/${DOMAIN_ESCAPED}/g" nginx/default.ssl.conf.template > nginx/ssl-active.conf
+      echo "=== nginx/ssl-active.conf 갱신 (업로드 용량 등 최신 템플릿 반영) ==="
+    fi
+  fi
 fi
 
 echo "=== Docker 빌드 및 실행 (EC2: 80번 포트) ==="
