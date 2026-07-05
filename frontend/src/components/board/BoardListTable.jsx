@@ -215,3 +215,77 @@ export function QaBoardList({ posts }) {
     </div>
   );
 }
+
+function attendanceLoginTarget(postId) {
+  const returnPath = `/bbs/board.php?bo_table=attendance&wr_id=${postId}`;
+  return {
+    pathname: "/bbs/login.php",
+    search: `?url=${encodeURIComponent(returnPath)}`,
+  };
+}
+
+export function AttendanceBoardList({ posts }) {
+  const listUrl = boardRouteTarget("attendance");
+  const adminLoggedIn = isAdmin();
+
+  return (
+    <div className="tbl_head01 tbl_wrap attendance-board-list">
+      <table>
+        <caption>출결서비스 목록</caption>
+        <thead>
+          <tr>
+            <th scope="col" className="th_num">
+              번<span className="th_sp" />호
+            </th>
+            <th scope="col" className="th_subject">
+              제<span className="th_sp" />목
+            </th>
+            <th scope="col" className="col4 th_work_date">
+              작업일
+            </th>
+            <th scope="col" className="col6 th_date">
+              <Link to={{ ...listUrl, search: "?bo_table=attendance&sst=wr_datetime&sod=desc" }}>
+                등록일{" "}
+              </Link>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {posts.length === 0 ? (
+            <tr>
+              <td colSpan="4">등록된 출결 기록이 없습니다.</td>
+            </tr>
+          ) : (
+            posts.map((post, index) => (
+              <tr key={post.id} className={index % 2 ? "even" : ""}>
+                <td className="td_num2">{post.id}</td>
+                <td className="td_subject" style={{ paddingLeft: 0 }}>
+                  <div className="bo_tit">
+                    <Link
+                      to={
+                        adminLoggedIn
+                          ? boardViewRouteTarget("attendance", post.id)
+                          : attendanceLoginTarget(post.id)
+                      }
+                    >
+                      {post.subject}
+                    </Link>
+                    {!adminLoggedIn && (
+                      <span className="attendance-lock-hint"> (관리자 열람)</span>
+                    )}
+                  </div>
+                </td>
+                <td className="td_datetime">
+                  <span className="attendance_work_date_txt">{post.workDate || "-"}</span>
+                </td>
+                <td className="td_datetime">
+                  <span className="attendance_date_txt">{post.date}</span>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}

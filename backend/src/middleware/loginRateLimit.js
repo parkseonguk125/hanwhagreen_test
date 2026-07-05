@@ -4,6 +4,8 @@ import { getClientIp, logSecurityEvent } from "./securityLogger.js";
 
 const windowMs = Number(process.env.SECURITY_LOGIN_WINDOW_MS ?? 15 * 60 * 1000);
 const max = Number(process.env.SECURITY_LOGIN_MAX ?? 10);
+const lockoutMs = Number(process.env.SECURITY_LOGIN_LOCKOUT_MS ?? 5 * 60 * 1000);
+const lockoutSeconds = Math.max(1, Math.ceil(lockoutMs / 1000));
 
 export const loginRateLimiter = rateLimit({
   windowMs,
@@ -28,8 +30,11 @@ export const loginRateLimiter = rateLimit({
     }).catch((err) => {
       console.error("[security] notify failed:", err.message);
     });
+    res.set("Retry-After", String(lockoutSeconds));
     res.status(429).json({
-      message: "로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+      code: "LOGIN_RATE_LIMITED",
+      retryAfterSeconds: lockoutSeconds,
+      message: `로그인 가능 횟수를 초과했습니다. ${Math.ceil(lockoutMs / 60000)}분 후에 다시 로그인해 주세요.`,
     });
   },
 });

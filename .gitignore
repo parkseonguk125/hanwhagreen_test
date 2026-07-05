@@ -15,6 +15,7 @@ test-results/
 .env
 .env.local
 .env.ssl
+ec2.env.upload
 *.pem
 
 # Docker/터널·로그 (PC마다 다름)
@@ -24,6 +25,9 @@ tunnel.err.log
 
 # QA 첨부 업로드 (볼륨 데이터, Git 제외)
 uploads/
+
+# Flutter SDK (로컬 개발용, 용량 큼 — docs/출격서비스_0단계_사전준비.md)
+.tools/
 
 # EC2 HTTPS 생성 파일 (도메인별)
 nginx/ssl-active.conf

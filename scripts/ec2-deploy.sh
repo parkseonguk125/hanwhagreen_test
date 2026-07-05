@@ -20,6 +20,18 @@ if [ -f nginx/ssl-active.conf ] && [ -f .env.ssl ]; then
 fi
 
 echo "=== Docker 빌드 및 실행 (EC2: 80번 포트) ==="
+if [ ! -f .env ]; then
+  echo ""
+  echo "[경고] .env 파일이 없습니다."
+  echo "  WinSCP로 .env 를 업로드하거나 .env.ec2.example 을 참고해 생성하세요."
+  echo "  출결서비스: ATTENDANCE_APP_API_KEY, VITE_NAVER_MAP_CLIENT_ID 필수"
+  echo ""
+elif ! grep -q '^ATTENDANCE_APP_API_KEY=.\+' .env 2>/dev/null; then
+  echo ""
+  echo "[경고] .env 에 ATTENDANCE_APP_API_KEY 가 비어 있습니다 (출결 앱 API 거부됨)."
+  echo ""
+fi
+
 docker compose $COMPOSE_FILES up -d --build
 
 echo ""
@@ -46,3 +58,9 @@ else
   echo "HTTP (IP): http://(EC2 퍼블릭 IP)/"
 fi
 echo "관리자 로그인: /bbs/login.php (admin / green1234 — 배포 후 비밀번호 변경 권장)"
+echo "출결서비스: /bbs/board.php?bo_table=attendance"
+if curl -sf http://127.0.0.1/api/health >/dev/null 2>&1; then
+  echo "API health: OK"
+else
+  echo "[참고] API health 확인 실패 — docker compose logs api"
+fi

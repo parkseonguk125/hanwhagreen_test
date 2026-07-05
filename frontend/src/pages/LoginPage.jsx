@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { loginMember } from "../services/authApi";
+import { isLoginRateLimitError, loginMember } from "../services/authApi";
 import { isLoggedIn, storeAuth } from "../services/authAccess";
+import {
+  formatLockoutRemaining,
+  getLoginLockoutAlertMessage,
+  getLoginLockoutRemainingSeconds,
+  setLoginLockout,
+} from "../services/loginLockout";
 import "../styles/login-page.css";
 
 export default function LoginPage() {
@@ -15,6 +21,11 @@ export default function LoginPage() {
     auto_login: false,
   });
   const [submitting, setSubmitting] = useState(false);
+  const [lockoutSeconds, setLockoutSeconds] = useState(() =>
+    getLoginLockoutRemainingSeconds()
+  );
+
+  const isLockedOut = lockoutSeconds > 0;
 
   useEffect(() => {
     document.body.classList.add("is-login-page");
@@ -30,7 +41,19 @@ export default function LoginPage() {
     };
   }, [navigate, returnUrl]);
 
+  useEffect(() => {
+    const syncLockout = () => {
+      setLockoutSeconds(getLoginLockoutRemainingSeconds());
+    };
+
+    syncLockout();
+    const timer = window.setInterval(syncLockout, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   const handleAutoLoginChange = (event) => {
+    if (isLockedOut) return;
+
     const checked = event.target.checked;
     if (checked) {
       const confirmed = window.confirm(
@@ -45,6 +68,11 @@ export default function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (isLockedOut) {
+      window.alert(getLoginLockoutAlertMessage(lockoutSeconds));
+      return;
+    }
 
     if (!form.mb_id.trim()) {
       alert("회원아이디를 입력해 주세요.");
@@ -72,6 +100,16 @@ export default function LoginPage() {
 
       navigate(returnUrl, { replace: true });
     } catch (error) {
+      if (isLoginRateLimitError(error)) {
+        const retryAfterSeconds = error.retryAfterSeconds || 300;
+        const seconds = setLoginLockout(retryAfterSeconds);
+        const remaining = Math.max(1, Math.ceil((seconds - Date.now()) / 1000));
+        setLockoutSeconds(remaining);
+        window.alert(getLoginLockoutAlertMessage(remaining));
+        setForm((prev) => ({ ...prev, mb_password: "" }));
+        return;
+      }
+
       alert(error.message);
     } finally {
       setSubmitting(false);
@@ -85,10 +123,23 @@ export default function LoginPage() {
           <p>회원/로그인</p>
         </div>
 
+        {isLockedOut ? (
+          <div className="login_lockout_notice" role="alert">
+            <strong>로그인 일시 제한</strong>
+            <p>로그인 가능 횟수를 초과했습니다.</p>
+            <p>
+              <span className="login_lockout_timer">
+                {formatLockoutRemaining(lockoutSeconds)}
+              </span>{" "}
+              후에 다시 로그인해 주세요.
+            </p>
+          </div>
+        ) : null}
+
         <form name="flogin" id="flogin" onSubmit={handleSubmit}>
           <input type="hidden" name="url" value={returnUrl} readOnly />
 
-          <fieldset id="login_fs">
+          <fieldset id="login_fs" disabled={isLockedOut}>
             <legend>회원로그인</legend>
 
             <label htmlFor="login_id" className="sound_only">
@@ -108,7 +159,7 @@ export default function LoginPage() {
                 onChange={(event) =>
                   setForm((prev) => ({ ...prev, mb_id: event.target.value }))
                 }
-                disabled={submitting}
+                disabled={submitting || isLockedOut}
                 autoComplete="username"
               />
             </span>
@@ -130,7 +181,7 @@ export default function LoginPage() {
                 onChange={(event) =>
                   setForm((prev) => ({ ...prev, mb_password: event.target.value }))
                 }
-                disabled={submitting}
+                disabled={submitting || isLockedOut}
                 autoComplete="current-password"
               />
             </span>
@@ -144,7 +195,7 @@ export default function LoginPage() {
                   className="selec_chk"
                   checked={form.auto_login}
                   onChange={handleAutoLoginChange}
-                  disabled={submitting}
+                  disabled={submitting || isLockedOut}
                 />
                 <label htmlFor="login_auto_login">
                   <span />
@@ -153,8 +204,16 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <button type="submit" className="login_submit" disabled={submitting}>
-              {submitting ? "로그인 중..." : "로그인"}
+            <button
+              type="submit"
+              className="login_submit"
+              disabled={submitting || isLockedOut}
+            >
+              {isLockedOut
+                ? `로그인 제한 (${formatLockoutRemaining(lockoutSeconds)})`
+                : submitting
+                  ? "로그인 중..."
+                  : "로그인"}
             </button>
           </fieldset>
         </form>

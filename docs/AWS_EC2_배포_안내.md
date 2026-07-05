@@ -164,6 +164,25 @@ cd ~/hanwhagreen_test
 
 **처음 빌드는 5~15분** 걸릴 수 있습니다.
 
+### EC2 `.env` 설정 (출결서비스·지도·알림)
+
+Git에는 `.env`가 없습니다. **WinSCP**로 서버에 직접 올려야 합니다.
+
+1. PC에서 **`출결서비스_AWS배포.bat`** 실행 → `ec2.env.upload` 생성  
+   또는 `.env.ec2.example` 을 참고해 작성
+2. WinSCP: `ec2.env.upload` → `~/hanwhagreen_test/.env`
+3. 필수 항목:
+
+| 변수 | 설명 |
+|------|------|
+| `ATTENDANCE_APP_API_KEY` | 출결 앱 API 키 (로컬 `.env` 와 동일) |
+| `VITE_NAVER_MAP_CLIENT_ID` | 웹 지도 (docker build 시 주입) |
+| `NOTIFY_LINK_URL` | `https://본인도메인/` |
+
+상세: [출결서비스_AWS_배포_안내.md](출결서비스_AWS_배포_안내.md)
+
+---
+
 ### 수동으로 할 때 (스크립트 대신)
 
 ```bash
@@ -237,5 +256,7 @@ cd ~/hanwhagreen_test
 | `docker-compose.ec2.yml` | 웹 포트 **80** 공개 |
 | `scripts/ec2-setup.sh` | Docker 설치 |
 | `scripts/ec2-deploy.sh` | clone/pull + compose up |
+| `출결서비스_AWS배포.bat` | EC2용 `.env` 생성 + 프로덕션 APK 빌드 (PC) |
+| `.env.ec2.example` | EC2 `.env` 항목 예시 |
 
 GitHub: https://github.com/parkseonguk125/hanwhagreen_test

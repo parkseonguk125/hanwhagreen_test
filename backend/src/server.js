@@ -3,8 +3,10 @@ import { getClientIp, logSecurityEvent } from "./middleware/securityLogger.js";
 import authRouter from "./routes/auth.js";
 import noticeRouter from "./routes/notice.js";
 import qaRouter from "./routes/qa.js";
+import attendanceRouter from "./routes/attendance.js";
 import liveDataRouter from "./routes/liveData.js";
 import { checkDbHealth, initDb } from "./db.js";
+import { ensureAttendanceUploadDir } from "./attendanceFiles.js";
 import { ensureQaUploadDir } from "./qaFiles.js";
 import { startDbHealthMonitor } from "./services/dbHealthMonitor.js";
 import { notifyDbFailure, notifyServerError } from "./services/notify.js";
@@ -21,7 +23,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Qa-Password"
+    "Content-Type, Authorization, X-Qa-Password, X-App-Key"
   );
   if (req.method === "OPTIONS") {
     res.sendStatus(204);
@@ -69,6 +71,7 @@ app.get("/api/health", async (_req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/notice", noticeRouter);
 app.use("/api/qa", qaRouter);
+app.use("/api/attendance", attendanceRouter);
 app.use("/api/live", liveDataRouter);
 
 app.use((err, req, res, _next) => {
@@ -81,6 +84,7 @@ app.use((err, req, res, _next) => {
 
 async function start() {
   ensureQaUploadDir();
+  ensureAttendanceUploadDir();
   try {
     await initDb();
     console.log("Database initialized");

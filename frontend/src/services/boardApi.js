@@ -209,3 +209,35 @@ export async function verifyQaPost(id, password) {
   });
   return parseResponse(response);
 }
+
+export async function fetchAttendancePosts() {
+  const response = await apiFetch("/attendance");
+  return parseResponse(response);
+}
+
+export async function fetchAttendancePost(id) {
+  const response = await apiFetch(`/attendance/${id}`, {
+    headers: jsonHeaders(true),
+  });
+  return parseResponse(response);
+}
+
+export async function deleteAttendancePost(id) {
+  const response = await apiFetch(`/attendance/${id}`, {
+    method: "DELETE",
+    headers: jsonHeaders(true),
+  });
+  return parseResponse(response);
+}
+
+export async function fetchAttendancePhotoBlob(id, photoId = null) {
+  const photoPath = photoId ? `/attendance/${id}/photos/${photoId}` : `/attendance/${id}/photo`;
+  const response = await apiFetch(photoPath, {
+    headers: jsonHeaders(true),
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.message || "사진을 불러올 수 없습니다.");
+  }
+  return response.blob();
+}

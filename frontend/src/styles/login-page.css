@@ -261,6 +261,35 @@ body.is-login-page .login_skin .login_submit:disabled {
   cursor: not-allowed;
 }
 
+body.is-login-page .login_lockout_notice {
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border: 1px solid #d9534f;
+  background: #fff5f5;
+  color: #8a1f1f;
+  text-align: center;
+}
+
+body.is-login-page .login_lockout_notice strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+body.is-login-page .login_lockout_notice p {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+body.is-login-page .login_lockout_timer {
+  font-weight: 700;
+  color: #c9302c;
+}
+
+body.is-login-page #login_fs:disabled {
+  opacity: 0.72;
+}
+
 @media screen and (max-width: 480px) {
   body.is-login-page .mbskin {
     width: 100%;

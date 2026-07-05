@@ -25,6 +25,7 @@ export const allSubMenus = [
   [
     { label: "공지사항", href: "/bbs/board.php?bo_table=notice" },
     { label: "온라인문의", href: "/bbs/board.php?bo_table=qa" },
+    { label: "출결서비스", href: "/bbs/board.php?bo_table=attendance" },
   ],
 ];
 

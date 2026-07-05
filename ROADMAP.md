@@ -19,6 +19,7 @@
 - [x] 6. EC2 공인 IP 접속 확인 — `http://13.209.17.85/`
 - [x] 7. 도메인 연결 — [docs/도메인_연결_안내.md](docs/도메인_연결_안내.md) (무료: DuckDNS)
 - [ ] 8. HTTPS (Let's Encrypt) — [docs/HTTPS_안내.md](docs/HTTPS_안내.md), `scripts/ssl-*.sh`
+- [x] **출결서비스 AWS 배포 준비** — [docs/출결서비스_AWS_배포_안내.md](docs/출결서비스_AWS_배포_안내.md), `출결서비스_AWS배포.bat`
 - [x] **9. 미구현 GNB 메뉴 페이지** — ABOUT US, BUSINESS, 회사실적, 지식산업권 (정적·갤러리)
 - [x] **10. Playwright E2E** — [docs/Playwright_안내.md](docs/Playwright_안내.md), `e2e/tests/`
 - [ ] **11. DB 백업·복원** — [docs/DB_백업_복원_안내.md](docs/DB_백업_복원_안내.md), `scripts/db-backup.sh`, `scripts/db-restore.sh`
@@ -32,6 +33,7 @@
 - [docs/AWS_EC2_배포_안내.md](docs/AWS_EC2_배포_안내.md) — **5~6번** EC2 배포·접속 확인
 - [docs/도메인_연결_안내.md](docs/도메인_연결_안내.md) — **7번** 무료 도메인 (DuckDNS)
 - [docs/HTTPS_안내.md](docs/HTTPS_안내.md) — **HTTPS** Let's Encrypt (EC2)
+- [docs/출결서비스_AWS_배포_안내.md](docs/출결서비스_AWS_배포_안내.md) — 출결 앱·게시판 EC2 반영
 - [docs/Playwright_안내.md](docs/Playwright_안내.md) — E2E 테스트 실행법
 - [docs/DB_백업_복원_안내.md](docs/DB_백업_복원_안내.md) — **11번** DB 백업·복원
 - [docs/서버_삭제_복구_연습_안내.md](docs/서버_삭제_복구_연습_안내.md) — **12번** EC2 삭제·복구 연습

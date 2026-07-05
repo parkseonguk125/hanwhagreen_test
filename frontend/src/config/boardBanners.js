@@ -4,6 +4,7 @@ const ASSET = "https://hanwhagreen.com/theme/FT_WEB50/img";
 export const boardBanners = {
   notice: "/board-banners/notice.jpg",
   qa: "/board-banners/qa.jpg",
+  attendance: "/board-banners/qa.jpg",
   company: "/board-banners/aboutus.webp",
   ceo: `${ASSET}/company_banner.jpg`,
   map: `${ASSET}/company_banner.jpg`,

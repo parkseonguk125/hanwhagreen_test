@@ -128,7 +128,53 @@ export async function initDb() {
   `);
 
   await migrateQaPosts();
+  await migrateAttendanceReports();
   await seedDb();
+}
+
+async function migrateAttendanceReports() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS attendance_reports (
+      id SERIAL PRIMARY KEY,
+      subject TEXT NOT NULL,
+      work_date DATE NOT NULL,
+      work_content TEXT NOT NULL,
+      personnel_count INTEGER NOT NULL DEFAULT 1,
+      reporter_name TEXT NOT NULL DEFAULT '',
+      latitude DOUBLE PRECISION,
+      longitude DOUBLE PRECISION,
+      address TEXT DEFAULT '',
+      photo_name TEXT DEFAULT '',
+      photo_path TEXT DEFAULT '',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS attendance_report_photos (
+      id SERIAL PRIMARY KEY,
+      report_id INTEGER NOT NULL REFERENCES attendance_reports(id) ON DELETE CASCADE,
+      photo_name TEXT NOT NULL DEFAULT '',
+      photo_path TEXT NOT NULL,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_attendance_report_photos_report_id
+      ON attendance_report_photos(report_id);
+  `);
+
+  await pool.query(`
+    INSERT INTO attendance_report_photos (report_id, photo_name, photo_path, sort_order)
+    SELECT id, photo_name, photo_path, 0
+    FROM attendance_reports
+    WHERE photo_path <> ''
+      AND NOT EXISTS (
+        SELECT 1 FROM attendance_report_photos p WHERE p.report_id = attendance_reports.id
+      );
+  `);
 }
 
 async function migrateQaPosts() {
@@ -471,4 +517,227 @@ export async function deleteQaPost(id) {
 
 export async function checkDbHealth() {
   await pool.query("SELECT 1");
+}
+
+function mapAttendanceRow(row, { includeDetail = false } = {}) {
+  if (!row) return null;
+
+  const post = {
+    id: row.id,
+    subject: row.subject,
+    workDate: formatViewDate(row.work_date),
+    reporterName: row.reporter_name || "",
+    date: formatBoardDate(row.created_at),
+    viewDate: formatViewDate(row.created_at),
+  };
+
+  if (includeDetail) {
+    post.workContent = row.work_content;
+    post.personnelCount = row.personnel_count;
+    post.latitude = row.latitude;
+    post.longitude = row.longitude;
+    post.address = row.address || "";
+    post.photoName = row.photo_name || "";
+    post.photos = [];
+    post.photoCount = 0;
+    post.hasPhoto = Boolean(row.photo_path);
+  }
+
+  return post;
+}
+
+async function attachAttendancePhotos(post) {
+  if (!post) return post;
+
+  const { rows } = await pool.query(
+    `
+      SELECT id, photo_name, photo_path, sort_order
+      FROM attendance_report_photos
+      WHERE report_id = $1
+      ORDER BY sort_order ASC, id ASC
+    `,
+    [Number(post.id)]
+  );
+
+  if (rows.length > 0) {
+    post.photos = rows.map((row) => ({
+      id: row.id,
+      photoName: row.photo_name || "",
+      sortOrder: row.sort_order,
+    }));
+    post.photoCount = post.photos.length;
+    post.hasPhoto = post.photoCount > 0;
+    post.photoName = post.photos[0]?.photoName || post.photoName;
+    return post;
+  }
+
+  if (post.hasPhoto) {
+    post.photos = [
+      {
+        id: null,
+        photoName: post.photoName || "현장 사진",
+        sortOrder: 0,
+        legacy: true,
+      },
+    ];
+    post.photoCount = 1;
+  }
+
+  return post;
+}
+
+export async function listAttendanceReports() {
+  const { rows } = await pool.query(
+    "SELECT * FROM attendance_reports ORDER BY id DESC"
+  );
+  return rows.map((row) => mapAttendanceRow(row, { includeDetail: false }));
+}
+
+export async function getAttendanceReport(id, { includeDetail = false } = {}) {
+  const { rows } = await pool.query(
+    "SELECT * FROM attendance_reports WHERE id = $1",
+    [Number(id)]
+  );
+  return mapAttendanceRow(rows[0], { includeDetail });
+}
+
+export async function getAttendanceReportFull(id) {
+  const post = await getAttendanceReport(id, { includeDetail: true });
+  return attachAttendancePhotos(post);
+}
+
+export async function getAttendancePhotoMeta(id, photoId = null) {
+  if (photoId) {
+    const { rows } = await pool.query(
+      `
+        SELECT p.photo_name, p.photo_path
+        FROM attendance_report_photos p
+        WHERE p.report_id = $1 AND p.id = $2
+      `,
+      [Number(id), Number(photoId)]
+    );
+    if (rows[0]) {
+      return {
+        photo_name: rows[0].photo_name,
+        photo_path: rows[0].photo_path,
+      };
+    }
+  }
+
+  const { rows } = await pool.query(
+    `
+      SELECT photo_name, photo_path
+      FROM attendance_report_photos
+      WHERE report_id = $1
+      ORDER BY sort_order ASC, id ASC
+      LIMIT 1
+    `,
+    [Number(id)]
+  );
+  if (rows[0]) {
+    return {
+      photo_name: rows[0].photo_name,
+      photo_path: rows[0].photo_path,
+    };
+  }
+
+  const legacy = await pool.query(
+    "SELECT photo_name, photo_path FROM attendance_reports WHERE id = $1",
+    [Number(id)]
+  );
+  if (!legacy.rows[0]?.photo_path) return null;
+  return {
+    photo_name: legacy.rows[0].photo_name,
+    photo_path: legacy.rows[0].photo_path,
+  };
+}
+
+export async function listAttendancePhotoPaths(reportId) {
+  const { rows } = await pool.query(
+    `
+      SELECT photo_path
+      FROM attendance_report_photos
+      WHERE report_id = $1
+    `,
+    [Number(reportId)]
+  );
+  const paths = rows.map((row) => row.photo_path).filter(Boolean);
+
+  if (paths.length > 0) return paths;
+
+  const legacy = await pool.query(
+    "SELECT photo_path FROM attendance_reports WHERE id = $1",
+    [Number(reportId)]
+  );
+  if (legacy.rows[0]?.photo_path) {
+    return [legacy.rows[0].photo_path];
+  }
+  return [];
+}
+
+function buildAttendanceSubject(workDate, reporterName, workContent) {
+  const name = reporterName?.trim() || "출결";
+  const snippet = workContent?.trim().replace(/\s+/g, " ") || "";
+  const suffix = snippet ? ` - ${snippet}` : "";
+  return `${workDate} ${name} 출결${suffix}`;
+}
+
+export async function createAttendanceReport(payload, photos = []) {
+  const workDate = payload.workDate;
+  const reporterName = payload.reporterName?.trim() || "";
+  const workContent = payload.workContent?.trim() || "";
+  const subject =
+    payload.subject?.trim() ||
+    buildAttendanceSubject(workDate, reporterName, workContent);
+
+  const firstPhoto = photos[0] || { photoName: "", photoPath: "" };
+
+  const { rows } = await pool.query(
+    `
+      INSERT INTO attendance_reports (
+        subject, work_date, work_content, personnel_count,
+        reporter_name, latitude, longitude, address,
+        photo_name, photo_path
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING id
+    `,
+    [
+      subject,
+      workDate,
+      workContent,
+      Number(payload.personnelCount) || 1,
+      reporterName,
+      payload.latitude ?? null,
+      payload.longitude ?? null,
+      payload.address?.trim() || "",
+      firstPhoto.photoName || "",
+      firstPhoto.photoPath || "",
+    ]
+  );
+
+  const reportId = rows[0].id;
+
+  for (let index = 0; index < photos.length; index += 1) {
+    const photo = photos[index];
+    await pool.query(
+      `
+        INSERT INTO attendance_report_photos (report_id, photo_name, photo_path, sort_order)
+        VALUES ($1, $2, $3, $4)
+      `,
+      [reportId, photo.photoName || "", photo.photoPath, index]
+    );
+  }
+
+  return getAttendanceReportFull(reportId);
+}
+
+export async function deleteAttendanceReport(id) {
+  const photoPaths = await listAttendancePhotoPaths(id);
+
+  const { rowCount } = await pool.query(
+    "DELETE FROM attendance_reports WHERE id = $1",
+    [Number(id)]
+  );
+
+  return { deleted: rowCount > 0, photoPaths };
 }
