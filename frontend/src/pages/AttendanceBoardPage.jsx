@@ -7,6 +7,7 @@ import SubLayout from "../components/board/SubLayout";
 import BoardSearch from "../components/board/BoardSearch";
 import BoardToolbar from "../components/board/BoardToolbar";
 import { AttendanceBoardList } from "../components/board/BoardListTable";
+import AttendanceDateFilter from "../components/board/AttendanceDateFilter";
 import AttendanceBoardView from "../components/board/AttendanceBoardView";
 import { boardBanners } from "../config/boardBanners";
 import { fetchAttendancePost, fetchAttendancePosts } from "../services/boardApi";
@@ -37,8 +38,10 @@ function attendanceLoginPath(wrId) {
 
 export default function AttendanceBoardPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const wrId = searchParams.get("wr_id");
+  const filterWorkDate = searchParams.get("work_date") || "";
+  const filterMonth = searchParams.get("month") || "";
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchState, setSearchState] = useState({ field: "wr_subject", keyword: "" });
@@ -54,7 +57,10 @@ export default function AttendanceBoardPage() {
     let cancelled = false;
     setListLoading(true);
 
-    fetchAttendancePosts()
+    fetchAttendancePosts({
+      workDate: filterWorkDate,
+      month: filterMonth,
+    })
       .then((items) => {
         if (!cancelled) setPosts(items);
       })
@@ -68,7 +74,34 @@ export default function AttendanceBoardPage() {
     return () => {
       cancelled = true;
     };
-  }, [wrId]);
+  }, [wrId, filterWorkDate, filterMonth]);
+
+  const updateDateFilter = ({ workDate = "", month = "" }) => {
+    const next = new URLSearchParams();
+    if (workDate) next.set("work_date", workDate);
+    if (month) next.set("month", month);
+    setSearchParams(next, { replace: true });
+  };
+
+  const handleApplyWorkDate = (value) => {
+    if (!value) {
+      updateDateFilter({ month: filterMonth });
+      return;
+    }
+    updateDateFilter({ workDate: value, month: "" });
+  };
+
+  const handleApplyWorkMonth = (value) => {
+    if (!value) {
+      updateDateFilter({ workDate: filterWorkDate });
+      return;
+    }
+    updateDateFilter({ workDate: "", month: value });
+  };
+
+  const handleResetDateFilter = () => {
+    setSearchParams({}, { replace: true });
+  };
 
   useEffect(() => {
     if (!wrId) {
@@ -188,6 +221,15 @@ export default function AttendanceBoardPage() {
             </p>
             <div id="bo_list" style={{ width: "100%" }}>
               <form id="fboardlist" onSubmit={(event) => event.preventDefault()}>
+                <AttendanceDateFilter
+                  workDate={filterWorkDate}
+                  workMonth={filterMonth}
+                  resultCount={filteredPosts.length}
+                  loading={listLoading}
+                  onApplyDate={handleApplyWorkDate}
+                  onApplyMonth={handleApplyWorkMonth}
+                  onReset={handleResetDateFilter}
+                />
                 <BoardToolbar
                   table="attendance"
                   showWrite={false}

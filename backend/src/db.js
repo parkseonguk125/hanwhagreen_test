@@ -588,9 +588,63 @@ async function attachAttendancePhotos(post) {
   return post;
 }
 
-export async function listAttendanceReports() {
+function validateAttendanceDateFilter(value) {
+  if (!value?.trim()) return "";
+  const trimmed = value.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  return "";
+}
+
+function validateAttendanceMonthFilter(value) {
+  if (!value?.trim()) return "";
+  const trimmed = value.trim();
+  if (/^\d{4}-\d{2}$/.test(trimmed)) return trimmed;
+  return "";
+}
+
+function monthToDateRange(month) {
+  const [year, monthNum] = month.split("-").map(Number);
+  const lastDay = new Date(year, monthNum, 0).getDate();
+  const mm = String(monthNum).padStart(2, "0");
+  return {
+    fromDate: `${year}-${mm}-01`,
+    toDate: `${year}-${mm}-${String(lastDay).padStart(2, "0")}`,
+  };
+}
+
+export async function listAttendanceReports({ workDate, month, fromDate, toDate } = {}) {
+  const conditions = [];
+  const params = [];
+
+  const exactDate = validateAttendanceDateFilter(workDate);
+  const monthKey = validateAttendanceMonthFilter(month);
+
+  if (exactDate) {
+    params.push(exactDate);
+    conditions.push(`work_date = $${params.length}`);
+  } else if (monthKey) {
+    const range = monthToDateRange(monthKey);
+    params.push(range.fromDate);
+    conditions.push(`work_date >= $${params.length}`);
+    params.push(range.toDate);
+    conditions.push(`work_date <= $${params.length}`);
+  } else {
+    const from = validateAttendanceDateFilter(fromDate);
+    const to = validateAttendanceDateFilter(toDate);
+    if (from) {
+      params.push(from);
+      conditions.push(`work_date >= $${params.length}`);
+    }
+    if (to) {
+      params.push(to);
+      conditions.push(`work_date <= $${params.length}`);
+    }
+  }
+
+  const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const { rows } = await pool.query(
-    "SELECT * FROM attendance_reports ORDER BY id DESC"
+    `SELECT * FROM attendance_reports ${whereClause} ORDER BY id DESC`,
+    params
   );
   return rows.map((row) => mapAttendanceRow(row, { includeDetail: false }));
 }

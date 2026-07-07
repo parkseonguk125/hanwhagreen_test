@@ -210,8 +210,12 @@ export async function verifyQaPost(id, password) {
   return parseResponse(response);
 }
 
-export async function fetchAttendancePosts() {
-  const response = await apiFetch("/attendance");
+export async function fetchAttendancePosts({ workDate = "", month = "" } = {}) {
+  const params = new URLSearchParams();
+  if (workDate) params.set("work_date", workDate);
+  if (month) params.set("month", month);
+  const query = params.toString();
+  const response = await apiFetch(`/attendance${query ? `?${query}` : ""}`);
   return parseResponse(response);
 }
 
