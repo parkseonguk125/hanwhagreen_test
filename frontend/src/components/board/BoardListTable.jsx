@@ -268,7 +268,7 @@ export function AttendanceBoardList({ posts }) {
                           : attendanceLoginTarget(post.id)
                       }
                     >
-                      {post.subject}
+                      {post.listSubject || post.subject}
                     </Link>
                     {!adminLoggedIn && (
                       <span className="attendance-lock-hint"> (관리자 열람)</span>

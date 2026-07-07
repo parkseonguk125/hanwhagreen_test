@@ -525,6 +525,7 @@ function mapAttendanceRow(row, { includeDetail = false } = {}) {
   const post = {
     id: row.id,
     subject: row.subject,
+    listSubject: buildAttendanceListSubject(row),
     workDate: formatViewDate(row.work_date),
     reporterName: row.reporter_name || "",
     date: formatBoardDate(row.created_at),
@@ -675,11 +676,27 @@ export async function listAttendancePhotoPaths(reportId) {
   return [];
 }
 
+function summarizeWorkContent(text, maxLen = 14) {
+  const oneLine = String(text || "").trim().replace(/\s+/g, " ");
+  if (!oneLine) return "";
+  if (oneLine.length <= maxLen) return oneLine;
+  return `${oneLine.slice(0, maxLen)}…`;
+}
+
+function buildAttendanceListSubject(row) {
+  const workDate = row.work_date ? formatViewDate(row.work_date) : "-";
+  const name = row.reporter_name?.trim() || "출결";
+  const snippet = summarizeWorkContent(row.work_content, 14);
+  if (snippet) return `${workDate} ${name} · ${snippet}`;
+  return `${workDate} ${name} 출결`;
+}
+
 function buildAttendanceSubject(workDate, reporterName, workContent) {
-  const name = reporterName?.trim() || "출결";
-  const snippet = workContent?.trim().replace(/\s+/g, " ") || "";
-  const suffix = snippet ? ` - ${snippet}` : "";
-  return `${workDate} ${name} 출결${suffix}`;
+  return buildAttendanceListSubject({
+    work_date: workDate,
+    reporter_name: reporterName,
+    work_content: workContent,
+  });
 }
 
 export async function createAttendanceReport(payload, photos = []) {
