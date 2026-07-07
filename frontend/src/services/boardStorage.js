@@ -91,7 +91,7 @@ export function filterPosts(posts, { field, keyword }) {
   if (!query) return posts;
 
   return posts.filter((post) => {
-    const subject = post.subject.toLowerCase();
+    const subject = (post.listSubject || post.subject || "").toLowerCase();
     const content = (post.content || "").toLowerCase();
 
     if (field === "wr_subject") return subject.includes(query);
