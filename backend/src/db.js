@@ -768,22 +768,20 @@ function formatAttendanceLocationFull(row) {
   return "장소 미등록";
 }
 
-/** 언제 · 어디서 · 누가 · 무엇을 (목록용 — 짧게) */
+/** 어디서 · 누가 · 무엇을 (목록용 — 짧게) */
 function buildAttendanceListSubject(row) {
-  const when = row.work_date ? formatViewDate(row.work_date) : "-";
   const where = compactAttendanceLocation(row);
   const who = row.reporter_name?.trim() || "-";
   const what = compactAttendanceText(row.work_content, 22);
-  return `${when} · ${where} · ${who} · ${what}`;
+  return `${where} · ${who} · ${what}`;
 }
 
-/** 언제 · 어디서 · 누가 · 무엇을 (상세용 — 전체) */
+/** 어디서 · 누가 · 무엇을 (상세용 — 전체) */
 function buildAttendanceDetailSubject(row) {
-  const when = row.work_date ? formatViewDate(row.work_date) : "-";
   const where = formatAttendanceLocationFull(row);
   const who = row.reporter_name?.trim() || "-";
   const what = String(row.work_content || "").trim().replace(/\s+/g, " ") || "-";
-  return `${when} · ${where} · ${who} · ${what}`;
+  return `${where} · ${who} · ${what}`;
 }
 
 function buildAttendanceSubject(workDate, reporterName, workContent, address) {

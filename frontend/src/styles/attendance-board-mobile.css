@@ -30,6 +30,14 @@
   font-weight: normal;
 }
 
+.attendance-page .attendance-board-list .attendance_date_txt {
+  white-space: nowrap;
+}
+
+.attendance-view .attendance-meta-value--date {
+  white-space: nowrap;
+}
+
 .attendance-page .attendance-board-list .td_subject .bo_tit a {
   white-space: normal;
   word-break: keep-all;
@@ -205,8 +213,8 @@
     font-size: 1.2rem;
   }
 
-  .attendance-page .attendance-board-list .th_work_date,
-  .attendance-page .attendance-board-list .attendance_work_date_txt {
+  .attendance-page .attendance-board-list .th_date,
+  .attendance-page .attendance-board-list .attendance_date_txt {
     white-space: nowrap;
   }
 

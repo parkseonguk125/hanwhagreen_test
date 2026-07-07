@@ -68,15 +68,15 @@ export default function AttendanceBoardView({ post }) {
             <div className="attendance-meta-grid">
               <div className="attendance-meta-item">
                 <span className="attendance-meta-label">작업일</span>
-                <span className="attendance-meta-value">{post.workDate || "-"}</span>
+                <span className="attendance-meta-value attendance-meta-value--date">{post.workDate || "-"}</span>
               </div>
               <div className="attendance-meta-item">
                 <span className="attendance-meta-label">등록일</span>
-                <span className="attendance-meta-value">{viewDate}</span>
+                <span className="attendance-meta-value attendance-meta-value--date">{viewDate}</span>
               </div>
               <div className="attendance-meta-item">
                 <span className="attendance-meta-label">등록시간</span>
-                <span className="attendance-meta-value">{registeredTime || "-"}</span>
+                <span className="attendance-meta-value attendance-meta-value--date">{registeredTime || "-"}</span>
               </div>
               <div className="attendance-meta-item">
                 <span className="attendance-meta-label">작성자</span>

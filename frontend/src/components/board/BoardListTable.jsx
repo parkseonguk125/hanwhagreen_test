@@ -240,9 +240,6 @@ export function AttendanceBoardList({ posts }) {
             <th scope="col" className="th_subject">
               제<span className="th_sp" />목
             </th>
-            <th scope="col" className="col4 th_work_date">
-              작업일
-            </th>
             <th scope="col" className="col6 th_date">
               <Link to={{ ...listUrl, search: "?bo_table=attendance&sst=wr_datetime&sod=desc" }}>
                 등록일{" "}
@@ -253,7 +250,7 @@ export function AttendanceBoardList({ posts }) {
         <tbody>
           {posts.length === 0 ? (
             <tr>
-              <td colSpan="4">등록된 출결 기록이 없습니다.</td>
+              <td colSpan="3">등록된 출결 기록이 없습니다.</td>
             </tr>
           ) : (
             posts.map((post, index) => (
@@ -276,10 +273,7 @@ export function AttendanceBoardList({ posts }) {
                   </div>
                 </td>
                 <td className="td_datetime">
-                  <span className="attendance_work_date_txt">{post.workDate || "-"}</span>
-                </td>
-                <td className="td_datetime">
-                  <span className="attendance_date_txt">{post.date}</span>
+                  <span className="attendance_date_txt">{post.viewDate || post.date || "-"}</span>
                 </td>
               </tr>
             ))
