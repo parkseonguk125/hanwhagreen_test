@@ -78,6 +78,11 @@ try {
         --dart-define=APP_API_KEY=$apiKey `
         --dart-define=NAVER_MAP_CLIENT_ID=$naverMapClientId
 
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[ERROR] Flutter APK build failed (exit $LASTEXITCODE)" -ForegroundColor Red
+        exit $LASTEXITCODE
+    }
+
     $apkSource = Join-Path $MobileDir "build\app\outputs\flutter-apk\app-release.apk"
     if (-not (Test-Path $apkSource)) {
         Write-Host "[ERROR] APK not found: $apkSource" -ForegroundColor Red
