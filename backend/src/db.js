@@ -676,26 +676,27 @@ export async function listAttendancePhotoPaths(reportId) {
   return [];
 }
 
-function summarizeWorkContent(text, maxLen = 14) {
-  const oneLine = String(text || "").trim().replace(/\s+/g, " ");
-  if (!oneLine) return "";
-  if (oneLine.length <= maxLen) return oneLine;
-  return `${oneLine.slice(0, maxLen)}…`;
+function formatAttendanceLocation(row) {
+  const address = String(row.address || "").trim().replace(/\s+/g, " ");
+  if (address) return address;
+  if (row.latitude != null && row.longitude != null) return "GPS 좌표";
+  return "장소 미등록";
 }
 
 function buildAttendanceListSubject(row) {
   const workDate = row.work_date ? formatViewDate(row.work_date) : "-";
-  const name = row.reporter_name?.trim() || "출결";
-  const snippet = summarizeWorkContent(row.work_content, 14);
-  if (snippet) return `${workDate} ${name} · ${snippet}`;
-  return `${workDate} ${name} 출결`;
+  const name = row.reporter_name?.trim() || "-";
+  const work = String(row.work_content || "").trim().replace(/\s+/g, " ") || "-";
+  const location = formatAttendanceLocation(row);
+  return `${workDate} | ${name} | ${work} | ${location}`;
 }
 
-function buildAttendanceSubject(workDate, reporterName, workContent) {
+function buildAttendanceSubject(workDate, reporterName, workContent, address) {
   return buildAttendanceListSubject({
     work_date: workDate,
     reporter_name: reporterName,
     work_content: workContent,
+    address,
   });
 }
 
@@ -705,7 +706,7 @@ export async function createAttendanceReport(payload, photos = []) {
   const workContent = payload.workContent?.trim() || "";
   const subject =
     payload.subject?.trim() ||
-    buildAttendanceSubject(workDate, reporterName, workContent);
+    buildAttendanceSubject(workDate, reporterName, workContent, payload.address);
 
   const firstPhoto = photos[0] || { photoName: "", photoPath: "" };
 
