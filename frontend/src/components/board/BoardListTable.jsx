@@ -258,7 +258,7 @@ export function AttendanceBoardList({ posts }) {
           ) : (
             posts.map((post, index) => (
               <tr key={post.id} className={index % 2 ? "even" : ""}>
-                <td className="td_num2">{post.id}</td>
+                <td className="td_num2">{index + 1}</td>
                 <td className="td_subject" style={{ paddingLeft: 0 }}>
                   <div className="bo_tit">
                     <Link

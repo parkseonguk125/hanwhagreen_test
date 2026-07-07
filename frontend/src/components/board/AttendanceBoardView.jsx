@@ -18,6 +18,7 @@ function isLikelyKoreanAddress(text) {
 export default function AttendanceBoardView({ post }) {
   const navigate = useNavigate();
   const viewDate = post.viewDate || post.date;
+  const registeredTime = post.registeredTime || "";
   const [resolvedAddress, setResolvedAddress] = useState(null);
 
   useEffect(() => {
@@ -74,6 +75,10 @@ export default function AttendanceBoardView({ post }) {
                 <span className="attendance-meta-value">{viewDate}</span>
               </div>
               <div className="attendance-meta-item">
+                <span className="attendance-meta-label">등록시간</span>
+                <span className="attendance-meta-value">{registeredTime || "-"}</span>
+              </div>
+              <div className="attendance-meta-item">
                 <span className="attendance-meta-label">작성자</span>
                 <span className="attendance-meta-value">{post.reporterName || "-"}</span>
               </div>
@@ -81,18 +86,18 @@ export default function AttendanceBoardView({ post }) {
                 <span className="attendance-meta-label">인원</span>
                 <span className="attendance-meta-value">{post.personnelCount ?? "-"}명</span>
               </div>
-              {hasCoordinates && (
-                <div className="attendance-meta-item attendance-meta-item--location">
-                  <span className="attendance-meta-label">위치</span>
-                  <span className="attendance-meta-value">
-                    {isAddressLoading ? (
-                      <span className="attendance-address-pending">주소 확인 중…</span>
-                    ) : (
-                      displayAddress || "등록된 주소 없음 (좌표만 저장됨)"
-                    )}
-                  </span>
-                </div>
-              )}
+              <div className="attendance-meta-item attendance-meta-item--location">
+                <span className="attendance-meta-label">위치</span>
+                <span className="attendance-meta-value">
+                  {!hasCoordinates ? (
+                    "-"
+                  ) : isAddressLoading ? (
+                    <span className="attendance-address-pending">주소 확인 중…</span>
+                  ) : (
+                    displayAddress || "등록된 주소 없음 (좌표만 저장됨)"
+                  )}
+                </span>
+              </div>
             </div>
           </section>
 

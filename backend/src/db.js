@@ -33,6 +33,21 @@ function formatViewDate(value) {
   return `${year}-${month}-${day}`;
 }
 
+function formatViewTime(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  return date.toLocaleTimeString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+function formatViewDateInSeoul(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  return date.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
+}
+
 function mapNoticeRow(row, { includeContent = true } = {}) {
   if (!row) return null;
 
@@ -529,7 +544,8 @@ function mapAttendanceRow(row, { includeDetail = false } = {}) {
     workDate: formatViewDate(row.work_date),
     reporterName: row.reporter_name || "",
     date: formatBoardDate(row.created_at),
-    viewDate: formatViewDate(row.created_at),
+    viewDate: formatViewDateInSeoul(row.created_at),
+    registeredTime: formatViewTime(row.created_at),
   };
 
   if (includeDetail) {
