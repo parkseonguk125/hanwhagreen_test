@@ -676,19 +676,27 @@ export async function listAttendancePhotoPaths(reportId) {
   return [];
 }
 
-function formatAttendanceLocation(row) {
+function compactAttendanceText(text, maxLen) {
+  const oneLine = String(text || "").trim().replace(/\s+/g, " ");
+  if (!oneLine) return "-";
+  if (oneLine.length <= maxLen) return oneLine;
+  return `${oneLine.slice(0, maxLen)}…`;
+}
+
+function compactAttendanceLocation(row) {
   const address = String(row.address || "").trim().replace(/\s+/g, " ");
-  if (address) return address;
-  if (row.latitude != null && row.longitude != null) return "GPS 좌표";
+  if (address) return compactAttendanceText(address, 18);
+  if (row.latitude != null && row.longitude != null) return "현장(GPS)";
   return "장소 미등록";
 }
 
+/** 언제 · 어디서 · 누가 · 무엇을 (목록·상단 제목용) */
 function buildAttendanceListSubject(row) {
-  const workDate = row.work_date ? formatViewDate(row.work_date) : "-";
-  const name = row.reporter_name?.trim() || "-";
-  const work = String(row.work_content || "").trim().replace(/\s+/g, " ") || "-";
-  const location = formatAttendanceLocation(row);
-  return `${workDate} | ${name} | ${work} | ${location}`;
+  const when = row.work_date ? formatViewDate(row.work_date) : "-";
+  const where = compactAttendanceLocation(row);
+  const who = row.reporter_name?.trim() || "-";
+  const what = compactAttendanceText(row.work_content, 22);
+  return `${when} · ${where} · ${who} · ${what}`;
 }
 
 function buildAttendanceSubject(workDate, reporterName, workContent, address) {

@@ -35,7 +35,10 @@
   word-break: keep-all;
   overflow-wrap: anywhere;
   line-height: 1.45;
-  display: inline-block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   max-width: 100%;
 }
 
