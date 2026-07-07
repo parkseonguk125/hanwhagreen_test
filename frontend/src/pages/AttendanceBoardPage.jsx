@@ -115,7 +115,7 @@ export default function AttendanceBoardPage() {
 
   useEffect(() => {
     if (viewPost) {
-      document.title = `${viewPost.listSubject || viewPost.subject} > 출결서비스 | 한화그린`;
+      document.title = `${viewPost.detailSubject || viewPost.listSubject || viewPost.subject} > 출결서비스 | 한화그린`;
       return () => {
         document.title = "한화그린";
       };

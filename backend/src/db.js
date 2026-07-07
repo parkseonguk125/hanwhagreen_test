@@ -538,6 +538,7 @@ function mapAttendanceRow(row, { includeDetail = false } = {}) {
     post.latitude = row.latitude;
     post.longitude = row.longitude;
     post.address = row.address || "";
+    post.detailSubject = buildAttendanceDetailSubject(row);
     post.photoName = row.photo_name || "";
     post.photos = [];
     post.photoCount = 0;
@@ -690,7 +691,14 @@ function compactAttendanceLocation(row) {
   return "장소 미등록";
 }
 
-/** 언제 · 어디서 · 누가 · 무엇을 (목록·상단 제목용) */
+function formatAttendanceLocationFull(row) {
+  const address = String(row.address || "").trim().replace(/\s+/g, " ");
+  if (address) return address;
+  if (row.latitude != null && row.longitude != null) return "현장(GPS)";
+  return "장소 미등록";
+}
+
+/** 언제 · 어디서 · 누가 · 무엇을 (목록용 — 짧게) */
 function buildAttendanceListSubject(row) {
   const when = row.work_date ? formatViewDate(row.work_date) : "-";
   const where = compactAttendanceLocation(row);
@@ -699,8 +707,17 @@ function buildAttendanceListSubject(row) {
   return `${when} · ${where} · ${who} · ${what}`;
 }
 
+/** 언제 · 어디서 · 누가 · 무엇을 (상세용 — 전체) */
+function buildAttendanceDetailSubject(row) {
+  const when = row.work_date ? formatViewDate(row.work_date) : "-";
+  const where = formatAttendanceLocationFull(row);
+  const who = row.reporter_name?.trim() || "-";
+  const what = String(row.work_content || "").trim().replace(/\s+/g, " ") || "-";
+  return `${when} · ${where} · ${who} · ${what}`;
+}
+
 function buildAttendanceSubject(workDate, reporterName, workContent, address) {
-  return buildAttendanceListSubject({
+  return buildAttendanceDetailSubject({
     work_date: workDate,
     reporter_name: reporterName,
     work_content: workContent,

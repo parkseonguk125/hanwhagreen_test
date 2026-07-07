@@ -63,7 +63,7 @@ export default function AttendanceBoardView({ post }) {
       <section className="viewSkin">
         <article className="inner attendance-view-cards">
           <section className="attendance-card attendance-card-header">
-            <p className="title attendance-post-title">{post.listSubject || post.subject}</p>
+            <p className="title attendance-post-title">{post.detailSubject || post.listSubject || post.subject}</p>
             <div className="attendance-meta-grid">
               <div className="attendance-meta-item">
                 <span className="attendance-meta-label">작업일</span>
