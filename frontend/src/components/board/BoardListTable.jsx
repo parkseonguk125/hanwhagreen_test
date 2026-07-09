@@ -241,7 +241,7 @@ export function AttendanceBoardList({ posts }) {
               제<span className="th_sp" />목
             </th>
             <th scope="col" className="col6 th_date">
-              <Link to={{ ...listUrl, search: "?bo_table=attendance&sst=wr_datetime&sod=asc" }}>
+              <Link to={{ ...listUrl, search: "?bo_table=attendance&sst=wr_datetime&sod=desc" }}>
                 등록일{" "}
               </Link>
             </th>
@@ -255,7 +255,7 @@ export function AttendanceBoardList({ posts }) {
           ) : (
             posts.map((post, index) => (
               <tr key={post.id} className={index % 2 ? "even" : ""}>
-                <td className="td_num2">{post.id}</td>
+                <td className="td_num2">{posts.length - index}</td>
                 <td className="td_subject" style={{ paddingLeft: 0 }}>
                   <div className="bo_tit">
                     <Link

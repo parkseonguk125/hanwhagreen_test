@@ -659,7 +659,7 @@ export async function listAttendanceReports({ workDate, month, fromDate, toDate 
 
   const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const { rows } = await pool.query(
-    `SELECT * FROM attendance_reports ${whereClause} ORDER BY id ASC`,
+    `SELECT * FROM attendance_reports ${whereClause} ORDER BY id DESC`,
     params
   );
   return rows.map((row) => mapAttendanceRow(row, { includeDetail: false }));
